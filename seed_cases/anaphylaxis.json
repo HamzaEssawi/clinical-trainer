@@ -1,0 +1,13 @@
+{
+  "title": "Throat swelling after eating at a restaurant",
+  "specialty": "emergency medicine",
+  "difficulty": "intern",
+  "presentation": "A 23-year-old female with a known peanut allergy presents via EMS 15 minutes after eating at a restaurant. She has throat tightness, hives over her trunk, and difficulty swallowing. EMS gave no medications. Vitals: BP 88/52, HR 132, RR 28, Temp 37.0C, SpO2 93%. Exam: stridor, diffuse urticaria, lip and tongue swelling, diffuse wheeze.",
+  "expected_differentials": ["anaphylaxis", "angioedema", "asthma exacerbation", "foreign body aspiration", "vasovagal syncope"],
+  "gold_standard_workup": {
+    "immediate": ["IM epinephrine 0.3mg immediately", "IV access", "IV fluids bolus", "supine position with legs elevated", "oxygen"],
+    "urgent": ["IV diphenhydramine", "IV ranitidine", "IV methylprednisolone", "repeat epinephrine if no improvement in 5-15 min", "airway assessment"],
+    "key_decision_point": "Epinephrine IM is the FIRST and most critical intervention — never delay it. Antihistamines and steroids are adjuncts only. Biphasic reaction can occur 8-72 hours later — observe for minimum 4-6 hours."
+  },
+  "is_public": true
+}

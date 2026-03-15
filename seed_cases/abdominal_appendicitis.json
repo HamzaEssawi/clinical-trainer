@@ -1,0 +1,13 @@
+{
+  "title": "Abdominal pain in a 22-year-old male",
+  "specialty": "surgery",
+  "difficulty": "intern",
+  "presentation": "A 22-year-old male presents with 18 hours of periumbilical pain that has migrated to the right lower quadrant. He has had anorexia, one episode of vomiting, and a low-grade fever. Vitals: BP 122/78, HR 98, RR 16, Temp 38.2C, SpO2 99%. Exam: RLQ tenderness at McBurney's point, positive Rovsing's sign, guarding but no rigidity.",
+  "expected_differentials": ["acute appendicitis", "mesenteric lymphadenitis", "Meckel's diverticulitis", "right-sided colitis", "psoas abscess"],
+  "gold_standard_workup": {
+    "immediate": ["CBC with differential", "BMP", "urinalysis", "CT abdomen/pelvis with contrast"],
+    "urgent": ["surgical consult", "NPO", "IV fluids", "ultrasound if CT contraindicated"],
+    "key_decision_point": "Alvarado score: migration + anorexia + RLQ tenderness + rebound + elevated WBC = high probability appendicitis, surgical consult"
+  },
+  "is_public": true
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Tremors and agitation in a 44-year-old male",
+  "specialty": "internal medicine",
+  "difficulty": "resident",
+  "presentation": "A 44-year-old male is brought in by police from a shelter. He is tremulous, diaphoretic, and agitated. His shelter roommate says he drinks heavily and was his last seen drinking 36 hours ago. Vitals: BP 162/98, HR 136, RR 20, Temp 38.1C, SpO2 97%. Exam: coarse tremor of hands, diaphoresis, mild confusion, hyperreflexia.",
+  "expected_differentials": ["alcohol withdrawal", "delirium tremens", "benzodiazepine withdrawal", "sympathomimetic toxidrome", "sepsis"],
+  "gold_standard_workup": {
+    "immediate": ["glucose", "CBC", "BMP", "magnesium", "phosphate", "thiamine IV before any glucose", "CIWA score"],
+    "urgent": ["blood cultures if febrile", "urine drug screen", "BAL", "liver function tests", "head CT if seizure"],
+    "key_decision_point": "Always give thiamine BEFORE glucose in alcoholics to prevent Wernicke encephalopathy. CIWA score guides benzodiazepine dosing. Delirium tremens = ICU admission."
+  },
+  "is_public": true
+}

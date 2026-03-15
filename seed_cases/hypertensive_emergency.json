@@ -1,0 +1,13 @@
+{
+  "title": "Severe headache and vision changes in a 48-year-old",
+  "specialty": "internal medicine",
+  "difficulty": "resident",
+  "presentation": "A 48-year-old male with poorly controlled hypertension presents with a severe headache and blurry vision for 4 hours. He ran out of his amlodipine 2 weeks ago. Vitals: BP 218/136, HR 92, RR 16, Temp 37.1C, SpO2 98%. Exam: papilledema on fundoscopy, mild confusion, no focal neurological deficits, trace proteinuria on dipstick.",
+  "expected_differentials": ["hypertensive emergency", "hypertensive encephalopathy", "ischemic stroke", "intracranial hemorrhage", "pre-eclampsia"],
+  "gold_standard_workup": {
+    "immediate": ["non-contrast CT head", "ECG", "CBC", "BMP", "urinalysis", "cardiac enzymes"],
+    "urgent": ["echocardiogram", "renal function trend", "ophthalmology consult", "IV labetalol or nicardipine"],
+    "key_decision_point": "BP >180/120 + end organ damage (papilledema, confusion, proteinuria) = hypertensive emergency. Reduce MAP by no more than 25% in first hour. Do NOT drop BP too fast."
+  },
+  "is_public": true
+}

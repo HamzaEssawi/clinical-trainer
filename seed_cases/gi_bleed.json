@@ -1,0 +1,13 @@
+{
+  "title": "Severe shortness of breath in a 16-year-old",
+  "specialty": "emergency medicine",
+  "difficulty": "intern",
+  "presentation": "A 16-year-old male with known asthma presents with progressive shortness of breath for 3 hours that is not responding to his home albuterol inhaler. He has used it 6 times today. Vitals: BP 128/82, HR 124, RR 32, Temp 37.2C, SpO2 91%. Exam: audible wheeze, accessory muscle use, speaks in 2-3 word sentences, prolonged expiratory phase.",
+  "expected_differentials": ["severe asthma exacerbation", "anaphylaxis", "pneumothorax", "foreign body aspiration", "vocal cord dysfunction"],
+  "gold_standard_workup": {
+    "immediate": ["peak flow measurement", "continuous albuterol nebulization", "ipratropium", "IV/oral corticosteroids", "SpO2 monitoring"],
+    "urgent": ["chest X-ray", "ABG if not improving", "IV magnesium sulfate", "heliox consideration"],
+    "key_decision_point": "Speaks in short sentences + SpO2 91% + accessory muscle use = severe exacerbation. Back-to-back albuterol + steroids immediately. Silent chest = impending respiratory failure."
+  },
+  "is_public": true
+}

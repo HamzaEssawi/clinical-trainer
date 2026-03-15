@@ -1,0 +1,13 @@
+{
+  "title": "Confusion and fever in an 81-year-old female",
+  "specialty": "internal medicine",
+  "difficulty": "intern",
+  "presentation": "An 81-year-old female with diabetes and CKD is brought in by her family for 2 days of confusion and decreased appetite. She has been incontinent and her family noticed she smells of urine. Vitals: BP 94/60, HR 118, RR 22, Temp 38.9C, SpO2 95%. Exam: dry mucous membranes, suprapubic tenderness, confusion, GCS 13.",
+  "expected_differentials": ["urosepsis", "septic shock", "UTI with delirium", "pyelonephritis", "hypovolemic shock"],
+  "gold_standard_workup": {
+    "immediate": ["blood cultures x2", "urinalysis", "urine culture", "CBC", "BMP", "lactate", "IV fluids bolus"],
+    "urgent": ["chest X-ray", "renal ultrasound", "blood gas", "procalcitonin"],
+    "key_decision_point": "Lactate >2 + hypotension + infection source = septic shock. Start IV fluids and antibiotics within 1 hour. Urosepsis is most common source in elderly females."
+  },
+  "is_public": true
+}

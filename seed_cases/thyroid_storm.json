@@ -1,0 +1,13 @@
+{
+  "title": "Fever and extreme agitation in a 32-year-old female",
+  "specialty": "internal medicine",
+  "difficulty": "fellow",
+  "presentation": "A 32-year-old female with known Graves disease is brought in extremely agitated and confused. Her family says she stopped taking her methimazole 3 weeks ago and had a URI last week. Vitals: BP 158/72, HR 158 irregular, RR 26, Temp 40.1C, SpO2 96%. Exam: exophthalmos, diffuse goiter, atrial fibrillation on monitor, hyperreflexia, fine tremor.",
+  "expected_differentials": ["thyroid storm", "sepsis", "stimulant toxidrome", "neuroleptic malignant syndrome", "pheochromocytoma"],
+  "gold_standard_workup": {
+    "immediate": ["TSH", "free T4", "free T3", "CBC", "BMP", "blood cultures", "ECG", "Burch-Wartofsky score"],
+    "urgent": ["propranolol IV", "PTU or methimazole", "potassium iodide 1 hour after PTU", "hydrocortisone", "ICU admission"],
+    "key_decision_point": "Burch-Wartofsky score >45 = thyroid storm. Give PTU BEFORE iodide. Beta-blocker for rate control. Steroids block peripheral T4 to T3 conversion. Precipitant was infection."
+  },
+  "is_public": true
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Sudden left-sided weakness in a 67-year-old",
+  "specialty": "neurology",
+  "difficulty": "resident",
+  "presentation": "A 67-year-old male with atrial fibrillation and hypertension presents with sudden onset left arm and leg weakness and facial droop noted by his wife 45 minutes ago. He was not on anticoagulation. Vitals: BP 192/104, HR 88 irregular, RR 16, Temp 36.9C, SpO2 97%. Neuro exam: left-sided hemiparesis, left facial droop, dysarthria, NIHSS score 12.",
+  "expected_differentials": ["ischemic stroke", "hemorrhagic stroke", "Todd's paralysis post-seizure", "hemiplegic migraine", "brain tumor"],
+  "gold_standard_workup": {
+    "immediate": ["non-contrast CT head", "CT angiography", "CBC", "BMP", "coagulation panel", "ECG", "glucose"],
+    "urgent": ["MRI brain with DWI", "echocardiogram", "carotid doppler"],
+    "key_decision_point": "Last known well within 4.5 hours + ischemic stroke on imaging = tPA eligible. Check BP, glucose, and coags first. AF = cardioembolic source"
+  },
+  "is_public": true
+}

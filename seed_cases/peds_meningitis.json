@@ -1,0 +1,13 @@
+{
+  "title": "Irritable infant with bulging fontanelle",
+  "specialty": "pediatrics",
+  "difficulty": "fellow",
+  "presentation": "A 7-month-old male is brought in by his mother for 24 hours of fever, irritability, and poor feeding. He cried inconsolably when picked up. No sick contacts. Immunizations are up to date. Vitals: Temp 39.4C, HR 168, RR 44, BP 88/54, SpO2 97%. Exam: bulging anterior fontanelle, paradoxical irritability, mottled skin, no rash.",
+  "expected_differentials": ["bacterial meningitis", "viral meningitis", "encephalitis", "intracranial hemorrhage", "sepsis without meningitis"],
+  "gold_standard_workup": {
+    "immediate": ["blood cultures x2", "CBC", "BMP", "CRP", "procalcitonin", "empiric antibiotics immediately"],
+    "urgent": ["lumbar puncture after stabilization", "CSF cell count glucose protein culture", "HSV PCR if encephalitis suspected", "head ultrasound"],
+    "key_decision_point": "Bulging fontanelle + paradoxical irritability + fever in infant = bacterial meningitis until proven otherwise. Antibiotics should not be delayed for LP in unstable infant."
+  },
+  "is_public": true
+}

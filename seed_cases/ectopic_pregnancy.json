@@ -1,0 +1,13 @@
+{
+  "title": "Pelvic pain in a 26-year-old female",
+  "specialty": "emergency medicine",
+  "difficulty": "resident",
+  "presentation": "A 26-year-old female presents with 2 days of right lower pelvic pain and one episode of light vaginal bleeding. Her last menstrual period was 7 weeks ago. She has a history of a prior pelvic inflammatory disease. Vitals: BP 100/68, HR 114, RR 18, Temp 37.0C, SpO2 99%. Exam: right adnexal tenderness, cervical motion tenderness, no peritoneal signs yet.",
+  "expected_differentials": ["ectopic pregnancy", "threatened miscarriage", "ovarian torsion", "PID", "appendicitis"],
+  "gold_standard_workup": {
+    "immediate": ["urine pregnancy test", "quantitative beta-hCG", "type and crossmatch", "CBC", "BMP", "transvaginal ultrasound"],
+    "urgent": ["serial beta-hCG if inconclusive", "OB/GYN consult immediately", "IV access and fluids"],
+    "key_decision_point": "Positive pregnancy test + adnexal tenderness + hemodynamic instability = ruptured ectopic until proven otherwise. OB/GYN consult immediately. Do NOT delay for imaging if unstable."
+  },
+  "is_public": true
+}

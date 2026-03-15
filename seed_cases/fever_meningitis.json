@@ -1,0 +1,13 @@
+{
+  "title": "Fever and neck stiffness in a 19-year-old",
+  "specialty": "emergency medicine",
+  "difficulty": "intern",
+  "presentation": "A 19-year-old male college student presents with 12 hours of worsening headache, fever, and neck stiffness. His roommate brought him in because he was confused this morning. He has a non-blanching petechial rash on his trunk and legs. Vitals: BP 96/58, HR 128, RR 22, Temp 39.8C, SpO2 98%. He is photophobic and cannot touch his chin to his chest.",
+  "expected_differentials": ["bacterial meningitis", "meningococcemia", "viral meningitis", "subarachnoid hemorrhage", "septic shock"],
+  "gold_standard_workup": {
+    "immediate": ["blood cultures x2", "CBC", "BMP", "coagulation panel", "IV antibiotics BEFORE LP if delayed", "CT head before LP"],
+    "urgent": ["lumbar puncture", "CSF analysis", "meningococcal PCR", "blood cultures"],
+    "key_decision_point": "Non-blanching rash + meningismus + hemodynamic instability = meningococcemia, do NOT delay antibiotics for LP"
+  },
+  "is_public": true
+}

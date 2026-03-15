@@ -1,0 +1,13 @@
+{
+  "title": "Altered mental status in a 24-year-old with diabetes",
+  "specialty": "internal medicine",
+  "difficulty": "intern",
+  "presentation": "A 24-year-old female with type 1 diabetes is brought in by her roommate for confusion and deep rapid breathing over the past several hours. She ran out of insulin 2 days ago. Vitals: BP 104/68, HR 118, RR 28 and deep, Temp 37.2C, SpO2 98%. Exam: fruity breath odor, dry mucous membranes, diffuse abdominal tenderness, GCS 13.",
+  "expected_differentials": ["diabetic ketoacidosis", "hyperosmolar hyperglycemic state", "alcoholic ketoacidosis", "sepsis", "toxic ingestion"],
+  "gold_standard_workup": {
+    "immediate": ["glucose", "ABG", "BMP", "CBC", "serum ketones", "urinalysis", "urine ketones", "ECG"],
+    "urgent": ["phosphate", "magnesium", "blood cultures if febrile", "lipase"],
+    "key_decision_point": "Glucose >250 + anion gap acidosis + ketonemia = DKA. Start IV fluids first, then insulin drip. Monitor potassium before starting insulin."
+  },
+  "is_public": true
+}

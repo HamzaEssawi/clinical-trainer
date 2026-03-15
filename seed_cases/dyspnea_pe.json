@@ -1,0 +1,13 @@
+{
+  "title": "Sudden dyspnea in a 34-year-old female",
+  "specialty": "emergency medicine",
+  "difficulty": "resident",
+  "presentation": "A 34-year-old female, 6 weeks post-partum, presents with sudden onset shortness of breath and right-sided pleuritic chest pain starting 2 hours ago. She has been mostly sedentary since delivery. Vitals: BP 118/76, HR 112, RR 24, SpO2 93% on room air, Temp 37.4C. Exam: mild right calf swelling and tenderness, lungs clear.",
+  "expected_differentials": ["pulmonary embolism", "pneumonia", "pneumothorax", "postpartum cardiomyopathy", "DVT"],
+  "gold_standard_workup": {
+    "immediate": ["CT pulmonary angiography", "ECG", "D-dimer", "CBC", "BMP", "ABG"],
+    "urgent": ["lower extremity doppler ultrasound", "echocardiogram", "BNP"],
+    "key_decision_point": "Post-partum state + tachycardia + hypoxia + calf swelling = high pretest probability for PE, start anticoagulation"
+  },
+  "is_public": true
+}

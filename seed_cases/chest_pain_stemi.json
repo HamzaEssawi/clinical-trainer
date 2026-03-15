@@ -1,0 +1,13 @@
+{
+  "title": "Chest pain in a 58-year-old male",
+  "specialty": "emergency medicine",
+  "difficulty": "resident",
+  "presentation": "A 58-year-old male with a history of hypertension and type 2 diabetes presents to the ED with 45 minutes of crushing substernal chest pain radiating to the left arm. He is diaphoretic and anxious. Vitals: BP 158/94, HR 96, RR 18, SpO2 97% on room air, Temp 37.1C. On exam: JVD present, lung fields clear.",
+  "expected_differentials": ["STEMI", "NSTEMI", "aortic dissection", "pulmonary embolism", "unstable angina"],
+  "gold_standard_workup": {
+    "immediate": ["12-lead ECG", "troponin", "CBC", "BMP", "chest X-ray"],
+    "urgent": ["echocardiogram", "repeat troponin at 3h"],
+    "key_decision_point": "ST elevation in leads II, III, aVF = inferior STEMI, activate cath lab"
+  },
+  "is_public": true
+}

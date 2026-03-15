@@ -1,0 +1,13 @@
+{
+  "title": "Decreased urine output in a 72-year-old post-op",
+  "specialty": "internal medicine",
+  "difficulty": "fellow",
+  "presentation": "A 72-year-old male with CKD stage 3, hypertension, and BPH is on post-op day 2 after elective hip replacement. Nursing notes that urine output has been less than 20mL/hr for the past 6 hours. He has been on ketorolac for pain and received gentamicin prophylaxis. Vitals: BP 142/88, HR 82, Temp 37.3C. Exam: mild lower extremity edema, bladder not palpable, Foley in place and patent.",
+  "expected_differentials": ["acute tubular necrosis", "prerenal azotemia", "urinary obstruction", "contrast nephropathy", "aminoglycoside nephrotoxicity"],
+  "gold_standard_workup": {
+    "immediate": ["BMP", "urinalysis with microscopy", "urine sodium", "urine creatinine", "FENa calculation", "CBC", "renal ultrasound"],
+    "urgent": ["stop NSAIDs and nephrotoxins", "IV fluid challenge", "urine eosinophils", "nephrology consult"],
+    "key_decision_point": "FENa <1% = prerenal. FENa >2% = intrinsic renal. Muddy brown casts on UA = ATN. NSAIDs + gentamicin + CKD = high risk for ATN."
+  },
+  "is_public": true
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Agitation and bizarre behavior in a 28-year-old",
+  "specialty": "psychiatry",
+  "difficulty": "resident",
+  "presentation": "A 28-year-old male is brought in by police after being found directing traffic naked at 3am. His family says he has not slept in 4 days, has been spending thousands of dollars online, and believes he has been chosen by God to lead a new nation. He has no prior psychiatric history. Vitals: BP 138/86, HR 104, Temp 37.1C, SpO2 99%. He is grandiose, pressured speech, easily distracted, denies any substance use.",
+  "expected_differentials": ["bipolar disorder manic episode", "substance-induced mania", "schizoaffective disorder", "secondary mania from medical cause", "brief psychotic disorder"],
+  "gold_standard_workup": {
+    "immediate": ["urine drug screen", "CBC", "BMP", "TSH", "HIV", "RPR", "head CT"],
+    "urgent": ["MRI brain", "EEG if seizure suspected", "B12 and folate", "psychiatric evaluation"],
+    "key_decision_point": "First episode psychosis/mania requires full medical workup to rule out organic cause before attributing to primary psychiatric illness. Thyroid and substances are key."
+  },
+  "is_public": true
+}

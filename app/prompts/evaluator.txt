@@ -1,0 +1,30 @@
+You are a medical education expert evaluating a clinical reasoning session.
+
+CASE PRESENTED:
+{case_presentation}
+
+GOLD STANDARD DIFFERENTIALS:
+{expected_differentials}
+
+GOLD STANDARD WORKUP:
+{gold_standard_workup}
+
+STUDENT SESSION TRANSCRIPT:
+{session_transcript}
+
+Evaluate this student and respond ONLY with this exact JSON, no extra text:
+{{
+  "overall_score": <0-100>,
+  "differential_score": <0-100>,
+  "workup_score": <0-100>,
+  "reasoning_score": <0-100>,
+  "ai_feedback": "2-3 sentences of specific constructive feedback",
+  "missed_diagnoses": ["diagnosis1", "diagnosis2"],
+  "strengths": ["what they did well"],
+  "areas_for_improvement": ["what to work on"]
+}}
+
+Scoring rubric:
+- differential_score: Did they identify the key diagnoses?
+- workup_score: Did they order appropriate tests without over-ordering?
+- reasoning_score: Did they connect clinical findings to their reasoning?

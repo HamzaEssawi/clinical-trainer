@@ -1,0 +1,13 @@
+{
+  "title": "Thunderclap headache in a 45-year-old female",
+  "specialty": "neurology",
+  "difficulty": "resident",
+  "presentation": "A 45-year-old female with no significant past medical history presents with the worst headache of her life that began suddenly while exercising 3 hours ago. She describes it as an explosion in her head. She vomited twice. Vitals: BP 178/102, HR 88, RR 16, Temp 37.0C, SpO2 99%. Neuro exam: mild neck stiffness, cranial nerves intact, no focal deficits.",
+  "expected_differentials": ["subarachnoid hemorrhage", "thunderclap migraine", "cerebral venous thrombosis", "hypertensive emergency", "cervical artery dissection"],
+  "gold_standard_workup": {
+    "immediate": ["non-contrast CT head", "CBC", "BMP", "coagulation panel"],
+    "urgent": ["lumbar puncture if CT negative", "CT angiography head and neck", "MRI brain"],
+    "key_decision_point": "Thunderclap headache = SAH until proven otherwise. Negative CT does not rule out SAH — LP for xanthochromia required"
+  },
+  "is_public": true
+}
