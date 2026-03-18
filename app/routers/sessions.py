@@ -1,37 +1,39 @@
-from fastapi import APIRouter, HTTPException, Depends, Header
+from fastapi import APIRouter, HTTPException, Depends, Header, Request
 from typing import Optional
-from supabase import Client
-from app.database import get_supabase
+from supabase import create_client, Client
+from app.config import settings
 from app.services.reasoning_engine import get_next_response, evaluate_session
 from app.models.session import ChatMessage, CustomCase
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
+limiter = Limiter(key_func=get_remote_address)
 
-def get_user_and_client(
-    supabase: Client,
-    token: str = "",
-    authorization: Optional[str] = None
-):
-    actual_token = token
-    if authorization and authorization.startswith("Bearer "):
-        actual_token = authorization.replace("Bearer ", "")
-    if not actual_token:
+def get_user_and_client(authorization: Optional[str] = None):
+    if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Not authenticated")
+    actual_token = authorization.replace("Bearer ", "")
     try:
-        user = supabase.auth.get_user(actual_token).user
-        supabase.postgrest.auth(actual_token)
-        return user, supabase
-    except:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+        sb = create_client(settings.supabase_url, settings.supabase_key)
+        sb.postgrest.auth(actual_token)
+        user = sb.auth.get_user(actual_token).user
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        return user, sb
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(status_code=500, detail="Authentication service unavailable")
 
 @router.post("/start/{case_id}")
+@limiter.limit("10/minute")
 async def start_session(
+    request: Request,
     case_id: str,
-    token: str = "",
     authorization: Optional[str] = Header(None),
-    supabase: Client = Depends(get_supabase)
 ):
-    user, sb = get_user_and_client(supabase, token, authorization)
+    user, sb = get_user_and_client(authorization)
 
     case = sb.table("cases").select("*").eq("id", case_id).single().execute()
     if not case.data:
@@ -60,13 +62,13 @@ async def start_session(
     }
 
 @router.post("/start-custom")
+@limiter.limit("10/minute")
 async def start_custom_session(
+    request: Request,
     body: CustomCase,
-    token: str = "",
     authorization: Optional[str] = Header(None),
-    supabase: Client = Depends(get_supabase)
 ):
-    user, sb = get_user_and_client(supabase, token, authorization)
+    user, sb = get_user_and_client(authorization)
 
     case = {
         "title": "Custom case",
@@ -109,14 +111,14 @@ async def start_custom_session(
     }
 
 @router.post("/{session_id}/chat")
+@limiter.limit("30/minute")
 async def chat(
+    request: Request,
     session_id: str,
     body: ChatMessage,
-    token: str = "",
     authorization: Optional[str] = Header(None),
-    supabase: Client = Depends(get_supabase)
 ):
-    user, sb = get_user_and_client(supabase, token, authorization)
+    user, sb = get_user_and_client(authorization)
 
     session = sb.table("sessions")\
         .select("*, cases(*)")\
@@ -156,24 +158,29 @@ async def chat(
         .eq("id", session_id).execute()
 
     if turn >= 10:
-        return await end_session(session_id, token, supabase)
+        return await _end_session_internal(session_id, case, all_messages.data, sb)
 
     return {"response": ai_response, "turn": turn, "max_turns": 10}
 
 @router.post("/{session_id}/end")
+@limiter.limit("10/minute")
 async def end_session(
+    request: Request,
     session_id: str,
-    token: str = "",
     authorization: Optional[str] = Header(None),
-    supabase: Client = Depends(get_supabase)
 ):
-    user, sb = get_user_and_client(supabase, token, authorization)
+    user, sb = get_user_and_client(authorization)
 
     session = sb.table("sessions")\
         .select("*, cases(*)")\
         .eq("id", session_id)\
         .eq("user_id", user.id)\
         .single().execute()
+
+    if not session.data:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if session.data["status"] == "completed":
+        raise HTTPException(status_code=400, detail="Session already completed.")
 
     case = session.data["cases"]
 
@@ -186,7 +193,10 @@ async def end_session(
     if len(user_messages) == 0:
         raise HTTPException(status_code=400, detail="You haven't answered anything yet.")
 
-    evaluation = await evaluate_session(case, messages.data)
+    return await _end_session_internal(session_id, case, messages.data, sb)
+
+async def _end_session_internal(session_id: str, case: dict, messages: list, sb: Client) -> dict:
+    evaluation = await evaluate_session(case, messages)
 
     sb.table("evaluations").insert({
         "session_id": session_id,
@@ -207,11 +217,18 @@ async def end_session(
 @router.get("/{session_id}/history")
 async def get_history(
     session_id: str,
-    token: str = "",
     authorization: Optional[str] = Header(None),
-    supabase: Client = Depends(get_supabase)
 ):
-    user, sb = get_user_and_client(supabase, token, authorization)
+    user, sb = get_user_and_client(authorization)
+
+    session = sb.table("sessions")\
+        .select("id")\
+        .eq("id", session_id)\
+        .eq("user_id", user.id)\
+        .single().execute()
+
+    if not session.data:
+        raise HTTPException(status_code=404, detail="Session not found")
 
     messages = sb.table("messages")\
         .select("*")\
