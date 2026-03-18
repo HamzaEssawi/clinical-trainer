@@ -1,21 +1,25 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Header
+from typing import Optional
 from supabase import Client
 from app.database import get_supabase
 from app.services.reasoning_engine import get_next_response, evaluate_session
-from pydantic import BaseModel
+from app.models.session import ChatMessage, CustomCase
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 
-class ChatMessage(BaseModel):
-    content: str
-
-class CustomCase(BaseModel):
-    case_text: str
-
-def get_user_and_client(token: str, supabase: Client):
+def get_user_and_client(
+    supabase: Client,
+    token: str = "",
+    authorization: Optional[str] = None
+):
+    actual_token = token
+    if authorization and authorization.startswith("Bearer "):
+        actual_token = authorization.replace("Bearer ", "")
+    if not actual_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
     try:
-        user = supabase.auth.get_user(token).user
-        supabase.postgrest.auth(token)
+        user = supabase.auth.get_user(actual_token).user
+        supabase.postgrest.auth(actual_token)
         return user, supabase
     except:
         raise HTTPException(status_code=401, detail="Not authenticated")
@@ -24,9 +28,10 @@ def get_user_and_client(token: str, supabase: Client):
 async def start_session(
     case_id: str,
     token: str = "",
+    authorization: Optional[str] = Header(None),
     supabase: Client = Depends(get_supabase)
 ):
-    user, sb = get_user_and_client(token, supabase)
+    user, sb = get_user_and_client(supabase, token, authorization)
 
     case = sb.table("cases").select("*").eq("id", case_id).single().execute()
     if not case.data:
@@ -39,7 +44,6 @@ async def start_session(
     }).execute()
 
     session_id = session.data[0]["id"]
-
     opening = await get_next_response(case.data, [])
 
     sb.table("messages").insert({
@@ -59,12 +63,10 @@ async def start_session(
 async def start_custom_session(
     body: CustomCase,
     token: str = "",
+    authorization: Optional[str] = Header(None),
     supabase: Client = Depends(get_supabase)
 ):
-    user, sb = get_user_and_client(token, supabase)
-
-    if len(body.case_text.strip()) < 50:
-        raise HTTPException(status_code=400, detail="Case text too short")
+    user, sb = get_user_and_client(supabase, token, authorization)
 
     case = {
         "title": "Custom case",
@@ -91,7 +93,6 @@ async def start_custom_session(
     }).execute()
 
     session_id = session.data[0]["id"]
-
     opening = await get_next_response(case, [])
 
     sb.table("messages").insert({
@@ -112,9 +113,10 @@ async def chat(
     session_id: str,
     body: ChatMessage,
     token: str = "",
+    authorization: Optional[str] = Header(None),
     supabase: Client = Depends(get_supabase)
 ):
-    user, sb = get_user_and_client(token, supabase)
+    user, sb = get_user_and_client(supabase, token, authorization)
 
     session = sb.table("sessions")\
         .select("*, cases(*)")\
@@ -162,9 +164,10 @@ async def chat(
 async def end_session(
     session_id: str,
     token: str = "",
+    authorization: Optional[str] = Header(None),
     supabase: Client = Depends(get_supabase)
 ):
-    user, sb = get_user_and_client(token, supabase)
+    user, sb = get_user_and_client(supabase, token, authorization)
 
     session = sb.table("sessions")\
         .select("*, cases(*)")\
@@ -205,9 +208,10 @@ async def end_session(
 async def get_history(
     session_id: str,
     token: str = "",
+    authorization: Optional[str] = Header(None),
     supabase: Client = Depends(get_supabase)
 ):
-    user, sb = get_user_and_client(token, supabase)
+    user, sb = get_user_and_client(supabase, token, authorization)
 
     messages = sb.table("messages")\
         .select("*")\

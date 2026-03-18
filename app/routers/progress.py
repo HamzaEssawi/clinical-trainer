@@ -1,20 +1,28 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Header
+from typing import Optional
 from supabase import Client
 from app.database import get_supabase
 
 router = APIRouter(prefix="/progress", tags=["progress"])
 
-def get_user(token: str, supabase: Client):
+def get_user(token: str, supabase: Client, authorization: Optional[str] = None):
+    actual_token = token
+    if authorization and authorization.startswith("Bearer "):
+        actual_token = authorization.replace("Bearer ", "")
     try:
-        user = supabase.auth.get_user(token).user
-        supabase.postgrest.auth(token)
+        user = supabase.auth.get_user(actual_token).user
+        supabase.postgrest.auth(actual_token)
         return user
     except:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
 @router.get("/my-stats")
-async def my_stats(token: str = "", supabase: Client = Depends(get_supabase)):
-    user = get_user(token, supabase)
+async def my_stats(
+    token: str = "",
+    authorization: Optional[str] = Header(None),
+    supabase: Client = Depends(get_supabase)
+):
+    user = get_user(token, supabase, authorization)
 
     results = supabase.table("evaluations")\
         .select("*, sessions(case_id, user_id)")\
@@ -40,8 +48,12 @@ async def my_stats(token: str = "", supabase: Client = Depends(get_supabase)):
     }
 
 @router.get("/completed-cases")
-async def completed_cases(token: str = "", supabase: Client = Depends(get_supabase)):
-    user = get_user(token, supabase)
+async def completed_cases(
+    token: str = "",
+    authorization: Optional[str] = Header(None),
+    supabase: Client = Depends(get_supabase)
+):
+    user = get_user(token, supabase, authorization)
     sessions = supabase.table("sessions")\
         .select("case_id")\
         .eq("user_id", user.id)\

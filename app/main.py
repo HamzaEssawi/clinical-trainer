@@ -2,18 +2,22 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import sessions, cases, progress, study
 
-
 app = FastAPI(
     title="Medicai",
     description="AI-powered clinical reasoning trainer",
-    version="0.1.0"
+    version="0.1.0",
+    docs_url=None,
+    redoc_url=None,
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://medicai.vercel.app",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 

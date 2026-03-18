@@ -19,8 +19,6 @@ async def get_case(case_id: str, supabase: Client = Depends(get_supabase)):
         .eq("id", case_id)\
         .single()\
         .execute()
-
     if not case.data:
         raise HTTPException(status_code=404, detail="Case not found")
-
     return case.data
