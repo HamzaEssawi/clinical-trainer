@@ -1,0 +1,13 @@
+{
+  "title": "Multiple family members with headache and confusion",
+  "specialty": "emergency medicine",
+  "difficulty": "intern",
+  "presentation": "Three members of the same family present simultaneously — a 45-year-old father, 42-year-old mother, and 16-year-old daughter — all with severe headache, nausea, and confusion after waking up. They had their gas heater running all night with windows closed. The family dog was also found lethargic. Vitals of father: BP 138/88, HR 106, RR 18, Temp 37.0C, SpO2 99% on pulse oximetry.",
+  "expected_differentials": ["carbon monoxide poisoning", "food poisoning", "viral illness", "gas leak other toxin", "mass psychogenic illness"],
+  "gold_standard_workup": {
+    "immediate": ["carboxyhemoglobin level via co-oximetry (NOT pulse ox)", "100% O2 via non-rebreather mask immediately", "ECG", "BMP", "troponin", "remove from environment"],
+    "urgent": ["hyperbaric oxygen if COHb >25% or neurological symptoms", "CT head", "lactate", "CK"],
+    "key_decision_point": "Pulse oximetry is FALSELY NORMAL in CO poisoning — only co-oximetry gives true saturation. Multiple family members + enclosed space + heater = CO until proven otherwise. 100% O2 immediately — halves CO half-life. Hyperbaric O2 for severe cases."
+  },
+  "is_public": true
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Sudden severe abdominal pain in a 60-year-old on NSAIDs",
+  "specialty": "gastroenterology",
+  "difficulty": "resident",
+  "presentation": "A 60-year-old female on long-term ibuprofen for rheumatoid arthritis presents with sudden onset severe epigastric pain that became diffuse over 2 hours. She describes it as the worst pain of her life. Vitals: BP 100/70, HR 122, RR 22, Temp 37.8C, SpO2 98%. Exam: rigid board-like abdomen, guarding, rebound tenderness throughout, absent bowel sounds.",
+  "expected_differentials": ["perforated peptic ulcer", "acute mesenteric ischemia", "perforated diverticulitis", "acute pancreatitis", "ruptured AAA"],
+  "gold_standard_workup": {
+    "immediate": ["upright CXR or CT abdomen/pelvis", "CBC", "BMP", "lipase", "lactate", "type and crossmatch", "NPO", "IV fluids", "IV antibiotics"],
+    "urgent": ["urgent surgical consult", "coagulation panel", "blood cultures"],
+    "key_decision_point": "Free air under diaphragm on upright CXR = perforation until proven otherwise. Surgical emergency — do not delay for extensive workup. NSAID use + epigastric pain = perforated peptic ulcer most likely."
+  },
+  "is_public": true
+}   

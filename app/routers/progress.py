@@ -6,7 +6,9 @@ router = APIRouter(prefix="/progress", tags=["progress"])
 
 def get_user(token: str, supabase: Client):
     try:
-        return supabase.auth.get_user(token).user
+        user = supabase.auth.get_user(token).user
+        supabase.postgrest.auth(token)
+        return user
     except:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
@@ -36,3 +38,14 @@ async def my_stats(token: str = "", supabase: Client = Depends(get_supabase)):
             key=lambda k: sum(s[f"{k}_score"] for s in scores)
         )
     }
+
+@router.get("/completed-cases")
+async def completed_cases(token: str = "", supabase: Client = Depends(get_supabase)):
+    user = get_user(token, supabase)
+    sessions = supabase.table("sessions")\
+        .select("case_id")\
+        .eq("user_id", user.id)\
+        .eq("status", "completed")\
+        .execute()
+    case_ids = [s["case_id"] for s in sessions.data]
+    return {"case_ids": case_ids}

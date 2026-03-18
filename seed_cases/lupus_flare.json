@@ -1,0 +1,13 @@
+{
+  "title": "Joint pain, rash and fever in a 24-year-old female",
+  "specialty": "rheumatology",
+  "difficulty": "resident",
+  "presentation": "A 24-year-old female presents with 2 weeks of symmetric joint pain, a facial rash that worsens in sunlight, fatigue, and mouth sores. She now has fever and shortness of breath. Vitals: BP 142/90, HR 104, RR 22, Temp 38.6C, SpO2 95%. Exam: butterfly malar rash sparing nasolabial folds, swollen wrists and MCP joints, oral ulcers, decreased breath sounds at right base, mild pericardial rub.",
+  "expected_differentials": ["SLE flare with serositis", "rheumatoid arthritis", "viral arthritis", "drug-induced lupus", "mixed connective tissue disease"],
+  "gold_standard_workup": {
+    "immediate": ["ANA", "anti-dsDNA", "complement C3/C4", "CBC", "BMP", "urinalysis with microscopy", "CXR", "ECG"],
+    "urgent": ["anti-Smith", "anti-phospholipid antibodies", "ESR", "CRP", "echocardiogram", "renal biopsy if proteinuria"],
+    "key_decision_point": "Malar rash + serositis + arthritis + renal involvement = SLE. Check urinalysis for casts — lupus nephritis changes management. ANA + anti-dsDNA + low complement = active disease. Hydroxychloroquine + steroids for flare."
+  },
+  "is_public": true
+}

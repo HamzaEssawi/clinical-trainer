@@ -1,0 +1,13 @@
+{
+  "title": "Severe chest pain in a 22-year-old with sickle cell disease",
+  "specialty": "hematology",
+  "difficulty": "resident",
+  "presentation": "A 22-year-old male with known sickle cell disease presents with severe bilateral chest pain, fever, and worsening shortness of breath over 24 hours. He had a vaso-occlusive crisis 3 days ago treated at home. Vitals: BP 128/82, HR 118, RR 28, Temp 38.9C, SpO2 88% on room air. Exam: decreased breath sounds bilaterally, dullness to percussion at bases, new infiltrates visible.",
+  "expected_differentials": ["acute chest syndrome", "pneumonia", "pulmonary embolism", "vaso-occlusive crisis", "pleuritis"],
+  "gold_standard_workup": {
+    "immediate": ["CXR", "CBC", "reticulocyte count", "type and crossmatch", "oxygen supplementation", "IV fluids", "incentive spirometry", "analgesics"],
+    "urgent": ["exchange transfusion if severe", "bronchodilators", "antibiotics covering atypicals", "echocardiogram", "CTPA"],
+    "key_decision_point": "New pulmonary infiltrate + fever + chest pain + hypoxia in sickle cell patient = acute chest syndrome. Most dangerous complication — mortality up to 3%. Exchange transfusion for rapidly deteriorating patients. Do NOT over-hydrate."
+  },
+  "is_public": true
+}

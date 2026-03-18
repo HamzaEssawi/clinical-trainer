@@ -1,0 +1,13 @@
+{
+  "title": "Severe back pain and contractions in a 32-year-old at 34 weeks",
+  "specialty": "obstetrics",
+  "difficulty": "fellow",
+  "presentation": "A 32-year-old G2P1 female at 34 weeks gestation presents with sudden onset severe back pain, uterine contractions every 3 minutes, and vaginal bleeding described as dark red. She denies trauma. Vitals: BP 92/58, HR 138, RR 22, Temp 37.1C, SpO2 96%. Exam: uterus rigid and tender, fetal heart rate 90 bpm with late decelerations, cervix 4cm dilated.",
+  "expected_differentials": ["placental abruption", "placenta previa", "uterine rupture", "preterm labor", "vasa previa"],
+  "gold_standard_workup": {
+    "immediate": ["IV access x2", "type and crossmatch", "CBC", "coagulation panel", "fibrinogen", "bedside ultrasound", "continuous fetal monitoring", "obstetrics emergency"],
+    "urgent": ["Kleihauer-Betke test", "BMP", "blood cultures if infection suspected"],
+    "key_decision_point": "Rigid painful uterus + dark vaginal bleeding + fetal distress = placental abruption until proven otherwise. Do NOT perform digital vaginal exam if placenta previa not excluded. Fetal bradycardia = emergency C-section. DIC is a major complication — check fibrinogen."
+  },
+  "is_public": true
+}

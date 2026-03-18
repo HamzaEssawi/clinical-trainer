@@ -1,0 +1,13 @@
+{
+  "title": "Progressive leg weakness in a 34-year-old post-diarrheal illness",
+  "specialty": "neurology",
+  "difficulty": "fellow",
+  "presentation": "A 34-year-old male presents with 1 week of progressive bilateral leg weakness now spreading to his arms and difficulty swallowing. He had Campylobacter gastroenteritis 3 weeks ago. Vitals: BP 132/84, HR 92, RR 20, SpO2 96%. Exam: symmetric ascending flaccid weakness worse in legs, absent deep tendon reflexes throughout, bilateral facial weakness, no sensory level, intact cognition.",
+  "expected_differentials": ["Guillain-Barré syndrome", "myasthenia gravis", "transverse myelitis", "botulism", "tick paralysis"],
+  "gold_standard_workup": {
+    "immediate": ["FVC and NIF monitoring", "ECG for arrhythmias", "CBC", "BMP", "anti-ganglioside antibodies", "lumbar puncture"],
+    "urgent": ["nerve conduction studies", "EMG", "MRI spine", "anti-GQ1b if Miller Fisher variant", "ICU if FVC < 20ml/kg"],
+    "key_decision_point": "Ascending flaccid paralysis + absent reflexes + post-infectious = GBS. Albuminocytologic dissociation on LP (high protein, normal cells) confirms. Monitor FVC — intubate if <20ml/kg or NIF <25cmH2O. IVIG or plasmapheresis. Autonomic instability is deadly."
+  },
+  "is_public": true
+}

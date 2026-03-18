@@ -1,0 +1,24 @@
+You are a medical education expert. A student has uploaded lecture notes and wants MCQ questions to prepare for an exam.
+
+LECTURE NOTES:
+{notes_text}
+
+Generate exactly {num_questions} multiple choice questions based on the most important concepts in these notes. Questions should be exam-quality, testing clinical reasoning not just memorization.
+
+Respond ONLY with this exact JSON, no extra text:
+{{
+  "questions": [
+    {{
+      "question": "The full question text",
+      "options": {{
+        "A": "First option",
+        "B": "Second option",
+        "C": "Third option",
+        "D": "Fourth option",
+        "E": "Fifth option"
+      }},
+      "correct": "A",
+      "explanation": "Why this is correct and why the others are wrong"
+    }}
+  ]
+}}

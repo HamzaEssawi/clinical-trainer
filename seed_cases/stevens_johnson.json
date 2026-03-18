@@ -1,0 +1,13 @@
+{
+  "title": "Spreading rash and mucosal ulcers in a 28-year-old",
+  "specialty": "dermatology",
+  "difficulty": "fellow",
+  "presentation": "A 28-year-old male started on allopurinol 3 weeks ago presents with 4 days of fever, sore throat, and a rapidly spreading painful rash starting on the trunk. He now has blistering on his lips, painful eye redness, and genital ulcers. Vitals: BP 118/76, HR 108, Temp 39.2C, RR 18, SpO2 97%. Exam: widespread erythematous macules with central blistering, positive Nikolsky sign, extensive oral and genital mucosal erosions, bilateral conjunctival injection.",
+  "expected_differentials": ["Stevens-Johnson syndrome", "toxic epidermal necrolysis", "erythema multiforme major", "staphylococcal scalded skin syndrome", "pemphigus vulgaris"],
+  "gold_standard_workup": {
+    "immediate": ["stop allopurinol immediately", "skin biopsy", "CBC", "BMP", "LFTs", "blood cultures", "ophthalmology consult", "dermatology consult", "IV fluids"],
+    "urgent": ["SCORTEN score", "wound care burns unit", "nutritional support", "IVIG consideration"],
+    "key_decision_point": "Body surface area <10% = SJS, >30% = TEN. Positive Nikolsky sign confirms diagnosis. STOP the offending drug immediately — this is the most critical intervention. Ophthalmology urgently — eye involvement can cause permanent blindness. Burns unit management."
+  },
+  "is_public": true
+}

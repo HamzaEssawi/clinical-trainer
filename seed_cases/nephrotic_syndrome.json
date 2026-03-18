@@ -1,0 +1,13 @@
+{
+  "title": "Massive leg swelling in a 35-year-old male",
+  "specialty": "nephrology",
+  "difficulty": "resident",
+  "presentation": "A 35-year-old male presents with 3 weeks of progressive bilateral leg swelling now extending to the abdomen, frothy urine, and periorbital edema worse in the mornings. No prior medical history. Vitals: BP 148/96, HR 82, RR 16, Temp 36.9C, SpO2 99%. Exam: massive pitting edema to the thighs, ascites, periorbital puffiness, no rash, no joint swelling.",
+  "expected_differentials": ["nephrotic syndrome", "heart failure", "liver cirrhosis", "hypothyroidism", "protein-losing enteropathy"],
+  "gold_standard_workup": {
+    "immediate": ["urinalysis with microscopy", "urine protein:creatinine ratio", "24h urine protein", "BMP", "albumin", "CBC", "lipid panel"],
+    "urgent": ["renal biopsy", "ANA", "anti-dsDNA", "complement", "hepatitis B and C", "HIV", "SPEP"],
+    "key_decision_point": "Massive proteinuria + hypoalbuminemia + edema + hyperlipidemia = nephrotic syndrome. Urine dipstick showing 3+ protein is key. Renal biopsy determines underlying cause. Minimal change disease is most common in adults — responds to steroids."
+  },
+  "is_public": true
+}

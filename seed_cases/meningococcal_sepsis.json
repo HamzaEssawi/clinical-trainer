@@ -1,0 +1,13 @@
+{
+  "title": "Non-blanching rash and shock in a 17-year-old",
+  "specialty": "infectious disease",
+  "difficulty": "resident",
+  "presentation": "A 17-year-old male is brought in by ambulance with 6 hours of fever, severe headache, and a rapidly spreading rash. His parents say the rash started as a few spots and has spread dramatically over 2 hours. Vitals: BP 72/40, HR 148, RR 28, Temp 40.2C, SpO2 94%. Exam: widespread non-blanching purpuric rash covering trunk, limbs and face, meningismus, GCS 12, cold mottled peripheries.",
+  "expected_differentials": ["meningococcal septicemia", "bacterial meningitis", "Rocky Mountain spotted fever", "DIC from other cause", "HSP"],
+  "gold_standard_workup": {
+    "immediate": ["blood cultures immediately then IV ceftriaxone WITHOUT delay", "CBC", "coagulation panel", "fibrinogen", "BMP", "lactate", "IV fluids bolus", "ICU"],
+    "urgent": ["LP only if stable after resuscitation", "meningococcal PCR", "cortisol", "echocardiogram", "dexamethasone"],
+    "key_decision_point": "Non-blanching purpuric rash + septic shock = meningococcemia. Give IV ceftriaxone IMMEDIATELY — do NOT wait for LP, cultures, or anything else. Every minute of delay increases mortality. DIC is a major complication — monitor coags closely. ICU mandatory."
+  },
+  "is_public": true
+}

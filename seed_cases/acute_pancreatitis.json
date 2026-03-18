@@ -1,0 +1,13 @@
+{
+  "title": "Severe epigastric pain radiating to the back in a 48-year-old",
+  "specialty": "gastroenterology",
+  "difficulty": "resident",
+  "presentation": "A 48-year-old male with a history of heavy alcohol use presents with 12 hours of severe epigastric pain radiating to the back, partially relieved by leaning forward, with nausea and vomiting. Vitals: BP 108/72, HR 118, RR 20, Temp 38.3C, SpO2 97%. Exam: epigastric tenderness with guarding, mild distension, decreased bowel sounds, mild jaundice, Grey Turner sign on flanks.",
+  "expected_differentials": ["acute pancreatitis", "perforated peptic ulcer", "mesenteric ischemia", "aortic dissection", "cholangitis"],
+  "gold_standard_workup": {
+    "immediate": ["lipase and amylase", "CBC", "BMP", "LFTs", "calcium", "triglycerides", "CRP", "aggressive IV fluid resuscitation"],
+    "urgent": ["CT abdomen with contrast at 48-72h if not improving", "RUQ ultrasound for gallstones", "ERCP if cholangitis", "MRCP"],
+    "key_decision_point": "Lipase >3x upper limit = pancreatitis. BISAP or Ranson's criteria for severity. Aggressive fluid resuscitation is cornerstone of treatment. Grey Turner sign = severe hemorrhagic pancreatitis. CT only if diagnosis unclear or not improving at 48-72h."
+  },
+  "is_public": true
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Hypotension and muffled heart sounds in a 55-year-old",
+  "specialty": "cardiology",
+  "difficulty": "fellow",
+  "presentation": "A 55-year-old male with a history of lung cancer presents with progressive shortness of breath and dizziness over 3 days. He appears anxious and diaphoretic. Vitals: BP 88/60, HR 128, RR 24, SpO2 94%, Temp 37.0C. Exam: muffled heart sounds, JVD, no peripheral edema, BP drops further on inspiration. CXR shows enlarged cardiac silhouette.",
+  "expected_differentials": ["cardiac tamponade", "tension pneumothorax", "massive PE", "cardiogenic shock", "constrictive pericarditis"],
+  "gold_standard_workup": {
+    "immediate": ["ECG", "bedside echocardiogram", "CXR", "IV access x2", "IV fluids cautiously"],
+    "urgent": ["pericardiocentesis", "CBC", "BMP", "coagulation panel", "troponin"],
+    "key_decision_point": "Beck's triad: hypotension + JVD + muffled heart sounds = cardiac tamponade. Pulsus paradoxus >10mmHg confirms. Bedside echo shows pericardial effusion with RV collapse. Pericardiocentesis is life-saving."
+  },
+  "is_public": true
+}

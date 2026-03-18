@@ -1,0 +1,24 @@
+You are a medical education expert. A student has uploaded lecture notes and wants you to generate clinical cases to help them study for an exam.
+
+LECTURE NOTES:
+{notes_text}
+
+Generate exactly {num_cases} clinical case(s) based on the key concepts in these notes. Each case should test the most important clinical reasoning points from the material.
+
+Respond ONLY with this exact JSON, no extra text:
+{{
+  "cases": [
+    {{
+      "title": "Brief case title e.g. 'Chest pain in a 45-year-old male'",
+      "specialty": "relevant specialty",
+      "difficulty": "intern or resident or fellow",
+      "presentation": "Full detailed case presentation with vitals and exam findings",
+      "expected_differentials": ["diagnosis1", "diagnosis2", "diagnosis3"],
+      "gold_standard_workup": {{
+        "immediate": ["test1", "test2"],
+        "urgent": ["test3", "test4"],
+        "key_decision_point": "The key clinical pearl from this case"
+      }}
+    }}
+  ]
+}}

@@ -1,0 +1,13 @@
+{
+  "title": "Worsening dyspnea in a 68-year-old smoker",
+  "specialty": "pulmonology",
+  "difficulty": "resident",
+  "presentation": "A 68-year-old male with 50 pack-year smoking history and known COPD presents with 3 days of worsening dyspnea, increased sputum production now yellow-green, and audible wheeze. He uses home oxygen at 2L/min. Vitals: BP 138/86, HR 108, RR 28, Temp 38.1C, SpO2 84% on room air. Exam: barrel chest, prolonged expiration, diffuse expiratory wheeze, using accessory muscles.",
+  "expected_differentials": ["COPD exacerbation", "pneumonia", "acute heart failure", "pulmonary embolism", "pneumothorax"],
+  "gold_standard_workup": {
+    "immediate": ["ABG", "CXR", "ECG", "controlled oxygen therapy 24-28%", "nebulized bronchodilators", "systemic corticosteroids"],
+    "urgent": ["CBC", "BMP", "sputum culture", "procalcitonin", "BNP", "CTPA if PE suspected"],
+    "key_decision_point": "Target SpO2 88-92% in COPD — avoid high flow O2 which can worsen hypercapnia. ABG showing hypercapnia + acidosis = NIV (BiPAP). Antibiotics if purulent sputum. NIV failure = intubation."
+  },
+  "is_public": true
+}

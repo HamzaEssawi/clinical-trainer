@@ -9,6 +9,9 @@ router = APIRouter(prefix="/sessions", tags=["sessions"])
 class ChatMessage(BaseModel):
     content: str
 
+class CustomCase(BaseModel):
+    case_text: str
+
 def get_user_and_client(token: str, supabase: Client):
     try:
         user = supabase.auth.get_user(token).user
@@ -50,6 +53,58 @@ async def start_session(
         "session_id": session_id,
         "opening_message": opening,
         "case_title": case.data["title"]
+    }
+
+@router.post("/start-custom")
+async def start_custom_session(
+    body: CustomCase,
+    token: str = "",
+    supabase: Client = Depends(get_supabase)
+):
+    user, sb = get_user_and_client(token, supabase)
+
+    if len(body.case_text.strip()) < 50:
+        raise HTTPException(status_code=400, detail="Case text too short")
+
+    case = {
+        "title": "Custom case",
+        "specialty": "general",
+        "difficulty": "resident",
+        "presentation": body.case_text,
+        "expected_differentials": [],
+        "gold_standard_workup": {
+            "immediate": [],
+            "urgent": [],
+            "key_decision_point": "Use your clinical judgment based on the case provided."
+        },
+        "is_public": False,
+        "created_by": user.id
+    }
+
+    case_result = sb.table("cases").insert(case).execute()
+    case_id = case_result.data[0]["id"]
+
+    session = sb.table("sessions").insert({
+        "user_id": user.id,
+        "case_id": case_id,
+        "status": "active"
+    }).execute()
+
+    session_id = session.data[0]["id"]
+
+    opening = await get_next_response(case, [])
+
+    sb.table("messages").insert({
+        "session_id": session_id,
+        "role": "assistant",
+        "content": opening,
+        "turn_number": 0
+    }).execute()
+
+    return {
+        "session_id": session_id,
+        "opening_message": opening,
+        "case_title": "Custom case"
     }
 
 @router.post("/{session_id}/chat")
@@ -123,6 +178,10 @@ async def end_session(
         .select("*")\
         .eq("session_id", session_id)\
         .order("turn_number").execute()
+
+    user_messages = [m for m in messages.data if m["role"] == "user"]
+    if len(user_messages) == 0:
+        raise HTTPException(status_code=400, detail="You haven't answered anything yet.")
 
     evaluation = await evaluate_session(case, messages.data)
 

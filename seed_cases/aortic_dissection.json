@@ -1,0 +1,13 @@
+{
+  "title": "Tearing chest pain radiating to the back in a 62-year-old",
+  "specialty": "vascular surgery",
+  "difficulty": "fellow",
+  "presentation": "A 62-year-old male with long-standing hypertension presents with sudden onset severe tearing chest pain radiating to the interscapular back, starting abruptly while lifting. He describes it as the worst pain ever. Vitals: BP 188/102 right arm, BP 154/88 left arm, HR 96, RR 20, SpO2 97%. Exam: aortic regurgitation murmur, normal neurological exam, pulses diminished in left arm.",
+  "expected_differentials": ["aortic dissection", "STEMI", "PE", "esophageal rupture", "musculoskeletal pain"],
+  "gold_standard_workup": {
+    "immediate": ["CT angiography chest/abdomen/pelvis", "ECG", "CBC", "BMP", "type and crossmatch", "coagulation panel", "IV beta-blocker for rate/BP control"],
+    "urgent": ["cardiothoracic surgery consult", "echocardiogram", "d-dimer", "troponin"],
+    "key_decision_point": "BP differential >20mmHg between arms + tearing back pain + aortic regurgitation = Type A dissection until proven otherwise. Do NOT give thrombolytics — fatal if dissection. Target HR <60 and SBP 100-120 with IV labetalol. Type A = surgical emergency."
+  },
+  "is_public": true
+}

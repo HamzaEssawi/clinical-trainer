@@ -1,0 +1,13 @@
+{
+  "title": "Cyclical fever in a 29-year-old returning from Africa",
+  "specialty": "infectious disease",
+  "difficulty": "resident",
+  "presentation": "A 29-year-old male returns from a 3-week trip to sub-Saharan Africa and presents with 5 days of cyclical fever occurring every 48 hours, rigors, headache, and myalgia. He did not take malaria prophylaxis. Vitals: BP 110/72, HR 112, Temp 40.1C, RR 18, SpO2 98%. Exam: splenomegaly, mild jaundice, pallor, no rash, no neck stiffness.",
+  "expected_differentials": ["malaria", "typhoid fever", "dengue fever", "viral hepatitis", "leptospirosis"],
+  "gold_standard_workup": {
+    "immediate": ["thick and thin blood smear x3", "rapid malaria antigen test", "CBC", "BMP", "LFTs", "blood cultures", "glucose"],
+    "urgent": ["parasite count", "G6PD level before treatment", "hemoglobin electrophoresis", "coagulation panel"],
+    "key_decision_point": "Travel to endemic area + cyclical fever + splenomegaly = malaria until proven otherwise. Thick blood smear is gold standard. P. falciparum = IV artesunate (can be fatal). Check glucose — hypoglycemia is common. G6PD before primaquine."
+  },
+  "is_public": true
+}

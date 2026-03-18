@@ -1,0 +1,13 @@
+{
+  "title": "Shock and confusion in a 38-year-old with fatigue",
+  "specialty": "endocrinology",
+  "difficulty": "fellow",
+  "presentation": "A 38-year-old female with a 6-month history of fatigue, weight loss, and skin darkening presents with confusion, severe abdominal pain, and vomiting for 24 hours after a URI. Vitals: BP 78/50, HR 136, RR 20, Temp 38.3C, SpO2 97%. Exam: diffuse hyperpigmentation especially in skin creases and gums, confused, dry mucous membranes, no focal neurology.",
+  "expected_differentials": ["Addisonian crisis", "septic shock", "hypovolemic shock", "hypoglycemia", "acute abdomen"],
+  "gold_standard_workup": {
+    "immediate": ["glucose", "BMP", "cortisol level", "ACTH level", "CBC", "blood cultures", "IV hydrocortisone 100mg STAT", "IV fluids normal saline"],
+    "urgent": ["ACTH stimulation test after stabilization", "thyroid function", "aldosterone", "renin", "abdominal CT if still unclear"],
+    "key_decision_point": "Do NOT wait for cortisol results before giving hydrocortisone in suspected Addisonian crisis — it is life-threatening. Hyperpigmentation + hypotension + hyponatremia + hyperkalemia = primary adrenal insufficiency. Precipitant was infection."
+  },
+  "is_public": true
+}
