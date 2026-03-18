@@ -1,98 +1,123 @@
-# Clinical Reasoning Trainer
+# Medicai — AI Clinical Reasoning Trainer
 
-An AI-powered clinical reasoning trainer that teaches medical students and residents through Socratic questioning. Practice real clinical cases with Dr. Chen, an AI attending physician who guides your thinking without giving away answers — then scores your performance at the end.
+Train smarter. Reason like a doctor.
 
-![Clinical Trainer](https://img.shields.io/badge/stack-FastAPI%20%7C%20Next.js%20%7C%20Supabase%20%7C%20Groq-red)
-![License](https://img.shields.io/badge/license-MIT-green)
-
----
-
-## What it does
-
-- **Socratic teaching** — Dr. Chen never gives answers directly. He asks focused questions that guide you to the right diagnosis.
-- **18+ clinical cases** across Emergency Medicine, Internal Medicine, Neurology, Surgery, Psychiatry, and Pediatrics
-- **AI scoring** — at the end of each session your differential reasoning, workup choices, and clinical thinking are scored out of 100
-- **Progress tracking** — track your average scores and weakest areas over time
-- **User accounts** — full auth with profile, avatar, and specialty settings
+Medicai is a full-stack AI-powered clinical reasoning trainer for medical students and residents. Practice real clinical cases with Dr. Chen, your AI attending physician who teaches through Socratic questioning — the same method real attendings use. Get scored on your differential diagnosis, workup, and clinical reasoning after every session.
 
 ---
 
-## Tech stack
+## Features
 
-### Backend
-- **Python + FastAPI** — REST API with async support
-- **Supabase** — PostgreSQL database, JWT authentication, file storage
-- **Groq API (LLaMA 3.3 70B)** — free AI model for Socratic responses and session evaluation
-- **Row Level Security** — users can only access their own data
-
-### Frontend
-- **Next.js 14 (App Router)** — React framework
-- **Supabase JS client** — auth and real-time data
-- **DM Sans + Instrument Serif** — typography
-- Pure CSS — no component library
+- **33 clinical cases** across Emergency Medicine, Internal Medicine, Neurology, Surgery, Psychiatry, Pediatrics, Cardiology, Pulmonology, Gastroenterology, Endocrinology, Infectious Disease, Rheumatology, Hematology, Nephrology, Obstetrics, Dermatology, and Vascular Surgery
+- **Socratic AI teaching** — Dr. Chen never gives answers, only targeted questions that force you to reason
+- **AI scoring** — scored on differentials (0-100), workup (0-100), and reasoning (0-100) after every session
+- **Custom cases** — paste any clinical scenario and practice with Dr. Chen
+- **Study generator** — upload lecture notes (PDF/TXT up to 150MB) and generate MCQ questions or clinical cases
+- **Progress tracking** — track sessions completed, average scores, and weakest areas
+- **Completed case tracking** — browse available and completed cases with filters by specialty and difficulty
+- **Profile and avatar** — customizable profile with specialty and photo
 
 ---
 
-## Project structure
+## Tech Stack
 
+| Layer | Technology |
+|---|---|
+| Backend | Python 3.11, FastAPI, Uvicorn |
+| AI | Groq API (LLaMA 3.3 70B) |
+| Database | Supabase (PostgreSQL + RLS) |
+| Auth | Supabase Auth (JWT) |
+| Storage | Supabase Storage (avatars) |
+| Frontend | Next.js 14 (App Router), plain CSS |
+| Fonts | Instrument Serif, DM Sans |
+| Rate limiting | slowapi |
+| Retry logic | tenacity |
+| Logging | structlog |
+| Deployment | Railway (backend), Vercel (frontend) |
+
+---
+
+## Project Structure
 ```
 clinical-trainer/
-├── app/                          # FastAPI backend
-│   ├── main.py                   # App entry point
-│   ├── config.py                 # Environment settings
-│   ├── database.py               # Supabase client
+├── app/
+│   ├── main.py                    # FastAPI app, CORS, rate limiting, upload middleware
+│   ├── config.py                  # Pydantic settings with validation
+│   ├── database.py                # Supabase client factory
+│   ├── models/
+│   │   └── session.py             # Pydantic request models with validation
 │   ├── routers/
-│   │   ├── sessions.py           # Chat session endpoints
-│   │   ├── cases.py              # Clinical cases endpoints
-│   │   └── progress.py           # Student analytics
+│   │   ├── sessions.py            # Start, chat, end, history endpoints
+│   │   ├── cases.py               # List and get cases
+│   │   ├── progress.py            # Stats and completed cases
+│   │   └── study.py               # Generate, list, and get study sets
 │   ├── services/
-│   │   ├── reasoning_engine.py   # AI pipeline (Groq)
-│   │   └── session_service.py
+│   │   └── reasoning_engine.py    # Groq AI calls with retry logic
 │   └── prompts/
-│       ├── attending_physician.txt  # Dr. Chen's teaching persona
-│       └── evaluator.txt            # Session scoring prompt
-├── seed_cases/                   # JSON clinical cases
-├── seed.py                       # Database seeder
-├── frontend/                     # Next.js frontend
+│       ├── attending_physician.txt
+│       ├── evaluator.txt
+│       ├── case_generator.txt
+│       └── mcq_generator.txt
+├── seed_cases/                    # 33 JSON clinical cases
+├── seed.py                        # Database seeder
+├── frontend/
 │   ├── app/
-│   │   ├── page.js               # Login / signup
-│   │   ├── cases/page.js         # Case browser
-│   │   ├── chat/[sessionId]/     # Chat interface
-│   │   └── settings/page.js      # Profile settings
-│   └── lib/
-│       └── supabase.js           # Supabase client
+│   │   ├── page.js                # Login / signup
+│   │   ├── cases/page.js          # Case browser with filters and tabs
+│   │   ├── chat/[sessionId]/page.js  # Chat interface with Dr. Chen
+│   │   ├── study/page.js          # Study generator
+│   │   ├── custom/page.js         # Custom case entry
+│   │   ├── settings/page.js       # Profile, avatar, password
+│   │   ├── about/page.js          # About page
+│   │   └── components/
+│   │       └── Navbar.js          # Shared navbar with hamburger menu
+│   ├── lib/
+│   │   ├── api.js                 # apiFetch helper (Authorization header)
+│   │   └── supabase.js            # Supabase JS client
+│   └── next.config.js             # Security headers, CSP
 └── requirements.txt
 ```
 
 ---
 
-## Getting started
-
-### Prerequisites
-- Python 3.10+
-- Node.js 18+
-- A [Supabase](https://supabase.com) account (free)
-- A [Groq](https://console.groq.com) API key (free)
-
-### 1. Clone the repo
-
-```bash
-git clone https://github.com/yourusername/clinical-trainer.git
-cd clinical-trainer
+## Database Schema
+```sql
+profiles        (id, email, full_name, specialty, avatar_url, role, created_at)
+cases           (id, title, specialty, difficulty, presentation, expected_differentials, gold_standard_workup, is_public, created_by)
+sessions        (id, user_id, case_id, status, turn_count, started_at, ended_at)
+messages        (id, session_id, role, content, turn_number, created_at)
+evaluations     (id, session_id, overall_score, differential_score, workup_score, reasoning_score, ai_feedback, missed_diagnoses)
+study_sets      (id, user_id, title, file_name, content_type, raw_text, generated_content, created_at)
 ```
 
-### 2. Set up the backend
+RLS enabled on all tables. Each user can only read and write their own data.
 
+---
+
+## Local Development
+
+### Prerequisites
+
+- Python 3.11+
+- Node.js 18+
+- Supabase project
+- Groq API key (free tier works)
+
+### Backend setup
 ```bash
+cd clinical-trainer
 python -m venv venv
-venv\Scripts\activate  # Windows
-# source venv/bin/activate  # Mac/Linux
+
+# Windows
+venv\Scripts\activate
+
+# Mac/Linux
+source venv/bin/activate
 
 pip install -r requirements.txt
 ```
 
-Create a `.env` file in the root:
-
+Create `app/.env`:
 ```env
 SUPABASE_URL=https://yourproject.supabase.co
 SUPABASE_KEY=your_anon_key
@@ -100,115 +125,108 @@ SUPABASE_SERVICE_KEY=your_service_role_key
 GROQ_API_KEY=your_groq_key
 ```
 
-### 3. Set up Supabase
-
-Run the SQL schema in your Supabase SQL editor (see `schema.sql` or the setup guide in the wiki).
-
-Create a public storage bucket called `avatars`.
-
-### 4. Seed the database
-
+Seed the database:
 ```bash
 python seed.py
 ```
 
-### 5. Start the backend
-
+Start the backend:
 ```bash
-python -m uvicorn app.main:app --reload
+uvicorn app.main:app --reload
 ```
 
-API docs available at `http://localhost:8000/docs`
+Backend runs at `http://localhost:8000`
 
-### 6. Set up the frontend
-
+### Frontend setup
 ```bash
 cd frontend
 npm install
 ```
 
 Create `frontend/.env.local`:
-
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://yourproject.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
+Start the frontend:
 ```bash
 npm run dev
 ```
 
-Open `http://localhost:3000`
+Frontend runs at `http://localhost:3000`
 
 ---
 
-## API endpoints
+## API Endpoints
 
-| Method | Route | Description |
-|--------|-------|-------------|
-| GET | `/cases/` | List all public cases |
-| GET | `/cases/{id}` | Get a specific case |
-| POST | `/sessions/start/{case_id}` | Start a new session |
-| POST | `/sessions/{id}/chat` | Send a message, get AI response |
-| POST | `/sessions/{id}/end` | End session and trigger evaluation |
-| GET | `/sessions/{id}/history` | Get full message history |
-| GET | `/progress/my-stats` | Get student analytics |
+All endpoints require `Authorization: Bearer <token>` header.
 
----
-
-## Clinical cases included
-
-| Case | Specialty | Difficulty |
-|------|-----------|------------|
-| Chest pain — 58-year-old male (STEMI) | Emergency Medicine | Resident |
-| Sudden dyspnea — post-partum female (PE) | Emergency Medicine | Resident |
-| Fever and neck stiffness — 19-year-old (Meningitis) | Emergency Medicine | Intern |
-| Thunderclap headache — 45-year-old (SAH) | Neurology | Resident |
-| Sudden left-sided weakness — 67-year-old (Stroke) | Neurology | Resident |
-| Abdominal pain — 22-year-old male (Appendicitis) | Surgery | Intern |
-| Altered mental status — diabetic (DKA) | Internal Medicine | Intern |
-| Agitation and mania — 28-year-old (Bipolar) | Psychiatry | Resident |
-| Irritable infant with bulging fontanelle (Meningitis) | Pediatrics | Fellow |
-| Decreased urine output — post-op (AKI) | Internal Medicine | Fellow |
-| Confusion and fever — elderly female (Urosepsis) | Internal Medicine | Intern |
-| Severe dyspnea — 16-year-old (Asthma) | Emergency Medicine | Intern |
-| Vomiting blood — alcoholic (GI Bleed) | Internal Medicine | Resident |
-| Pelvic pain — young female (Ectopic Pregnancy) | Emergency Medicine | Resident |
-| Severe headache + vision changes (Hypertensive Emergency) | Internal Medicine | Resident |
-| Tremors and agitation (Alcohol Withdrawal) | Internal Medicine | Resident |
-| Extreme agitation — Graves disease (Thyroid Storm) | Internal Medicine | Fellow |
-| Throat swelling after eating (Anaphylaxis) | Emergency Medicine | Intern |
+| Method | Endpoint | Description | Rate limit |
+|---|---|---|---|
+| GET | `/cases/` | List all public cases | — |
+| GET | `/cases/{id}` | Get case details | — |
+| POST | `/sessions/start/{case_id}` | Start a session | 10/min |
+| POST | `/sessions/start-custom` | Start a custom case session | 10/min |
+| POST | `/sessions/{id}/chat` | Send a message to Dr. Chen | 30/min |
+| POST | `/sessions/{id}/end` | End and evaluate a session | 10/min |
+| GET | `/sessions/{id}/history` | Get session message history | — |
+| GET | `/progress/my-stats` | Get user stats and averages | — |
+| GET | `/progress/completed-cases` | Get completed case IDs | — |
+| POST | `/study/generate` | Generate MCQs or cases from notes | 5/min |
+| GET | `/study/my-sets` | List past study sets | — |
+| GET | `/study/sets/{id}` | Get a specific study set | — |
+| GET | `/health` | Health check | — |
 
 ---
 
-## How the AI works
+## Deployment
 
-Every chat turn rebuilds the full conversation history from the database and passes it to the AI with the case details and teaching persona. The AI has no memory between calls — the database is the memory.
+### Backend — Railway
 
-```
-User message
-    → Load full session history from Supabase
-    → Build prompt: system persona + case + full history
-    → Call Groq API (LLaMA 3.3 70B)
-    → Parse response
-    → Save to Supabase messages table
-    → Return to frontend
-```
+1. Push to GitHub
+2. Create new Railway project → Deploy from GitHub repo
+3. Set root directory to `/` (not `/app`)
+4. Add environment variables: `SUPABASE_URL`, `SUPABASE_KEY`, `SUPABASE_SERVICE_KEY`, `GROQ_API_KEY`
+5. Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 
-At session end, a separate evaluator prompt scores the student's reasoning against the gold standard answer key stored in the case data.
+### Frontend — Vercel
+
+1. Import GitHub repo to Vercel
+2. Set root directory to `frontend`
+3. Add environment variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_API_URL` (your Railway URL)
+4. Deploy
+
+After deploying, update `allow_origins` in `app/main.py` with your Vercel URL.
 
 ---
 
-## Environment variables
+## Security
 
-| Variable | Description |
-|----------|-------------|
-| `SUPABASE_URL` | Your Supabase project URL |
-| `SUPABASE_KEY` | Supabase anon/public key |
-| `SUPABASE_SERVICE_KEY` | Supabase service role key (bypasses RLS) |
-| `GROQ_API_KEY` | Groq API key for LLaMA model |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase URL for frontend |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key for frontend |
+- JWT tokens sent via `Authorization: Bearer` header only — never in URL query params
+- Per-request Supabase client — no shared mutable state between concurrent requests
+- RLS policies on all Supabase tables
+- Rate limiting on all AI-calling endpoints via slowapi
+- Input validation on all request bodies via Pydantic
+- File upload size limit — 150MB max
+- PDF text extraction capped at 12,000 characters / 50 pages
+- Security headers on all routes — CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy
+- API docs disabled in production
+- Structured logging via structlog with user ID and session ID on every event
+- Groq API calls run in thread executor — non-blocking async
+- Automatic retry on Groq rate limits and timeouts via tenacity (3 attempts, exponential backoff)
+
+---
+
+## How Scoring Works
+
+At the end of every session Dr. Chen evaluates the full conversation against a gold standard answer key:
+
+- **Differential score** — did you identify the key diagnoses including the most critical one?
+- **Workup score** — did you order the right tests in the right priority without over-ordering?
+- **Reasoning score** — did you connect clinical findings to your diagnoses explicitly?
+- **Overall score** — weighted combination of all three
 
 ---
 
