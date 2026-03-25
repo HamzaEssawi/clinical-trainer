@@ -13,7 +13,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 
 try:
-    import PyPDF2
+    import pypdf
     PDF_SUPPORT = True
 except ImportError:
     PDF_SUPPORT = False
@@ -54,7 +54,7 @@ def extract_text(file_bytes: bytes, filename: str) -> str:
     ext = filename.lower().split('.')[-1]
     if ext == 'pdf' and PDF_SUPPORT:
         try:
-            reader = PyPDF2.PdfReader(io.BytesIO(file_bytes))
+            reader = pypdf.PdfReader(io.BytesIO(file_bytes))
             text = ""
             max_pages = min(len(reader.pages), 50)
             for i in range(max_pages):
