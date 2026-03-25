@@ -49,3 +49,7 @@ app.include_router(study.router)
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+    
+@app.get("/")
+def root():
+    return {"status": "ok", "message": "Medicai API is running 🏥"}
