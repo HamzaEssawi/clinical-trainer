@@ -9,12 +9,17 @@ from app.routers import sessions, cases, progress, study
 limiter = Limiter(key_func=get_remote_address)
 
 app = FastAPI(
+    
     title="Medicai",
     description="AI-powered clinical reasoning trainer",
     version="0.1.0",
     docs_url=None,
     redoc_url=None,
 )
+ 
+@app.get("/")
+def root():
+    return {"status": "ok", "message": "Medicai API is running 🏥"}
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -50,6 +55,3 @@ app.include_router(study.router)
 async def health():
     return {"status": "ok"}
     
-@app.get("/")
-def root():
-    return {"status": "ok", "message": "Medicai API is running 🏥"}
