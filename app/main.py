@@ -13,8 +13,8 @@ app = FastAPI(
     title="Medicai",
     description="AI-powered clinical reasoning trainer",
     version="0.1.0",
-    docs_url=None,
-    redoc_url=None,
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
  
 @app.get("/")
@@ -39,10 +39,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://medicai.vercel.app",
+        "https://medicai-nu.vercel.app",
     ],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
