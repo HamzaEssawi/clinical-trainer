@@ -8,6 +8,7 @@ from pathlib import Path
 import json
 import asyncio
 import io
+import structlog
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
@@ -17,6 +18,7 @@ try:
 except ImportError:
     PDF_SUPPORT = False
 
+logger = structlog.get_logger()
 router = APIRouter(prefix="/study", tags=["study"])
 limiter = Limiter(key_func=get_remote_address)
 
@@ -44,7 +46,8 @@ def get_user_and_client(authorization: Optional[str] = None):
         return user, sb
     except HTTPException:
         raise
-    except Exception:
+    except Exception as e:
+        logger.error("auth.error", error=type(e).__name__, detail=str(e))
         raise HTTPException(status_code=500, detail="Authentication service unavailable")
 
 def extract_text(file_bytes: bytes, filename: str) -> str:
@@ -83,6 +86,7 @@ async def generate_study_content(
     authorization: Optional[str] = Header(None),
 ):
     user, sb = get_user_and_client(authorization)
+    logger.info("study.generate", user_id=user.id, content_type=content_type, filename=file.filename)
     client = get_groq_client()
 
     if content_type not in VALID_CONTENT_TYPES:
@@ -132,8 +136,10 @@ async def generate_study_content(
         generated = json.loads(raw.strip())
 
     except json.JSONDecodeError:
+        logger.error("study.generate.json_error", user_id=user.id)
         raise HTTPException(status_code=502, detail="AI returned invalid response. Please try again.")
-    except Exception:
+    except Exception as e:
+        logger.error("study.generate.error", user_id=user.id, error=str(e))
         raise HTTPException(status_code=502, detail="AI service unavailable. Please try again.")
 
     title = f"{file.filename.split('.')[0]} — {content_type.upper()}"
@@ -157,6 +163,7 @@ async def generate_study_content(
     }).execute()
 
     study_set_id = study_set.data[0]["id"]
+    logger.info("study.generate.complete", user_id=user.id, study_set_id=study_set_id, num_items=num_items)
 
     return {
         "study_set_id": study_set_id,

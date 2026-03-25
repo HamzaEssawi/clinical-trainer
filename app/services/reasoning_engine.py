@@ -6,6 +6,8 @@ from app.config import settings
 from fastapi import HTTPException
 from functools import lru_cache
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+import structlog
+logger = structlog.get_logger()
 
 @lru_cache(maxsize=1)
 def get_groq_client() -> Groq:
@@ -56,8 +58,10 @@ async def get_next_response(case: dict, messages: list) -> str:
         )
         return response.choices[0].message.content
     except (RateLimitError, APITimeoutError, APIConnectionError) as e:
+        logger.error("groq.rate_limit", error=str(e))
         raise HTTPException(status_code=503, detail="AI service temporarily unavailable. Please try again.")
     except Exception as e:
+        logger.error("groq.error", error=str(e))
         raise HTTPException(status_code=502, detail="AI service unavailable. Please try again.")
 
 async def evaluate_session(case: dict, messages: list) -> dict:
@@ -97,9 +101,9 @@ async def evaluate_session(case: dict, messages: list) -> dict:
 
         return json.loads(raw.strip())
 
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=502, detail="AI returned invalid response. Please try again.")
-    except (RateLimitError, APITimeoutError, APIConnectionError):
+    except (RateLimitError, APITimeoutError, APIConnectionError) as e:
+        logger.error("groq.rate_limit", error=str(e))
         raise HTTPException(status_code=503, detail="AI service temporarily unavailable. Please try again.")
-    except Exception:
+    except Exception as e:
+        logger.error("groq.error", error=str(e))
         raise HTTPException(status_code=502, detail="AI service unavailable. Please try again.")

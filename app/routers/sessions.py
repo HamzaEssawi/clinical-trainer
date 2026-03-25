@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Header, Request
+from fastapi import APIRouter, HTTPException, Header, Request
 from typing import Optional
 from supabase import create_client, Client
 from app.config import settings
@@ -6,7 +6,9 @@ from app.services.reasoning_engine import get_next_response, evaluate_session
 from app.models.session import ChatMessage, CustomCase
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+import structlog
 
+logger = structlog.get_logger()
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 limiter = Limiter(key_func=get_remote_address)
 
@@ -23,7 +25,8 @@ def get_user_and_client(authorization: Optional[str] = None):
         return user, sb
     except HTTPException:
         raise
-    except Exception:
+    except Exception as e:
+        logger.error("auth.error", error=type(e).__name__, detail=str(e))
         raise HTTPException(status_code=500, detail="Authentication service unavailable")
 
 @router.post("/start/{case_id}")
@@ -34,6 +37,7 @@ async def start_session(
     authorization: Optional[str] = Header(None),
 ):
     user, sb = get_user_and_client(authorization)
+    logger.info("session.started", user_id=user.id, case_id=case_id)
 
     case = sb.table("cases").select("*").eq("id", case_id).single().execute()
     if not case.data:
@@ -69,6 +73,7 @@ async def start_custom_session(
     authorization: Optional[str] = Header(None),
 ):
     user, sb = get_user_and_client(authorization)
+    logger.info("session.start_custom", user_id=user.id)
 
     case = {
         "title": "Custom case",
@@ -132,6 +137,8 @@ async def chat(
     case = session.data["cases"]
     turn = session.data["turn_count"] + 1
 
+    logger.info("session.chat", user_id=user.id, session_id=session_id, turn=turn)
+
     sb.table("messages").insert({
         "session_id": session_id,
         "role": "user",
@@ -193,7 +200,9 @@ async def end_session(
     if len(user_messages) == 0:
         raise HTTPException(status_code=400, detail="You haven't answered anything yet.")
 
-    return await _end_session_internal(session_id, case, messages.data, sb)
+    result = await _end_session_internal(session_id, case, messages.data, sb)
+    logger.info("session.completed", user_id=user.id, session_id=session_id, score=result["evaluation"].get("overall_score"))
+    return result
 
 async def _end_session_internal(session_id: str, case: dict, messages: list, sb: Client) -> dict:
     evaluation = await evaluate_session(case, messages)
@@ -220,6 +229,7 @@ async def get_history(
     authorization: Optional[str] = Header(None),
 ):
     user, sb = get_user_and_client(authorization)
+    logger.info("session.history", user_id=user.id, session_id=session_id)
 
     session = sb.table("sessions")\
         .select("id")\
