@@ -27,28 +27,34 @@ PROMPTS = {
 def _call_groq_sync(client: Groq, **kwargs):
     return client.chat.completions.create(**kwargs)
 
+BLIND_OPENING = "A patient has come to see you. What would you like to know?"
+
 async def get_next_response(case: dict, messages: list, blind_mode: bool = False) -> str:
     client = get_groq_client()
 
+    # Blind mode opening: never call the LLM — return hardcoded sentence so the
+    # model cannot possibly leak the case text on the first message.
+    if blind_mode and len(messages) == 0:
+        logger.info("reasoning_engine.blind_opening_hardcoded")
+        return BLIND_OPENING
+
     if blind_mode:
         mode_instructions = (
-            "=== BLIND MODE IS ACTIVE ===\n"
-            "CRITICAL RULE: Do NOT present any case information, symptoms, or clinical details — not now, not ever, unless the student specifically asks.\n"
-            "YOUR ENTIRE FIRST MESSAGE MUST BE EXACTLY THIS ONE SENTENCE: "
-            "'A patient has come to see you. What would you like to know?'\n"
-            "Do not add anything else. No diagnosis hints. No symptoms. No context. Just that one sentence.\n"
-            "For all subsequent messages: use CASE INFORMATION (below) as your private reference. "
-            "Answer only what the student directly asks about. "
-            "If asked about a symptom or finding present in the case, confirm it. "
-            "If asked about something not in the case, say the patient denies it or it is not present. "
-            "Never volunteer information. Never summarize. One answer per turn, then one question back."
+            "BLIND MODE — you are answering a student's questions about a patient.\n"
+            "The student does NOT know the case. They are gathering history by asking you questions.\n"
+            "Rules:\n"
+            "- Answer ONLY what the student directly asks about\n"
+            "- If the finding is present in CASE INFORMATION: confirm or describe it naturally\n"
+            "- If the finding is NOT in the case: say the patient denies it or it is normal\n"
+            "- NEVER volunteer case details the student has not asked about\n"
+            "- After answering, ask one focused question to advance their clinical reasoning\n"
+            "When the student has gathered history and proposes differentials, probe their reasoning. "
+            "Then guide through workup, then treatment & management."
         )
         history_phase = (
-            "BLIND MODE — the student does NOT have the case. They must ask for every piece of information. "
-            "Answer only what they directly ask using CASE INFORMATION as your private reference. "
-            "Do not volunteer anything unprompted."
+            "Blind mode — student is gathering history by asking questions. "
+            "Answer based on CASE INFORMATION only when directly asked. Never volunteer anything."
         )
-        logger.info("reasoning_engine.blind_mode_active", blind_mode=True, message_count=len(messages))
     else:
         mode_instructions = (
             "YOUR FIRST MESSAGE: Copy the CASE INFORMATION below word for word exactly as written. "
@@ -56,7 +62,6 @@ async def get_next_response(case: dict, messages: list, blind_mode: bool = False
             "Do not skip this. Do not summarize. Copy the full case text exactly."
         )
         history_phase = "Full case has been presented to the student upfront."
-        logger.info("reasoning_engine.normal_mode_active", blind_mode=False, message_count=len(messages))
 
     system_prompt = PROMPTS["attending_physician"].format(
         case_presentation=case["presentation"],
@@ -64,6 +69,13 @@ async def get_next_response(case: dict, messages: list, blind_mode: bool = False
         gold_standard_workup=json.dumps(case["gold_standard_workup"]),
         mode_instructions=mode_instructions,
         history_phase=history_phase
+    )
+
+    logger.info(
+        "reasoning_engine.prompt_assembled",
+        blind_mode=blind_mode,
+        message_count=len(messages),
+        prompt_start=system_prompt[:500]
     )
 
     history = [{"role": "system", "content": system_prompt}]
