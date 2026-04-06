@@ -1,8 +1,8 @@
-from fastapi import APIRouter, HTTPException, Header, Request
+from fastapi import APIRouter, HTTPException, Header, Request, Query
 from typing import Optional
 from supabase import create_client, Client
 from app.config import settings
-from app.services.reasoning_engine import get_next_response, evaluate_session
+from app.services.reasoning_engine import get_next_response, evaluate_session, generate_case_summary
 from app.models.session import ChatMessage, CustomCase
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -34,10 +34,11 @@ def get_user_and_client(authorization: Optional[str] = None):
 async def start_session(
     request: Request,
     case_id: str,
+    blind_mode: bool = Query(False),
     authorization: Optional[str] = Header(None),
 ):
     user, sb = get_user_and_client(authorization)
-    logger.info("session.started", user_id=user.id, case_id=case_id)
+    logger.info("session.started", user_id=user.id, case_id=case_id, blind_mode=blind_mode)
 
     case = sb.table("cases").select("*").eq("id", case_id).single().execute()
     if not case.data:
@@ -46,11 +47,12 @@ async def start_session(
     session = sb.table("sessions").insert({
         "user_id": user.id,
         "case_id": case_id,
-        "status": "active"
+        "status": "active",
+        "blind_mode": blind_mode
     }).execute()
 
     session_id = session.data[0]["id"]
-    opening = await get_next_response(case.data, [])
+    opening = await get_next_response(case.data, [], blind_mode=blind_mode)
 
     sb.table("messages").insert({
         "session_id": session_id,
@@ -62,7 +64,8 @@ async def start_session(
     return {
         "session_id": session_id,
         "opening_message": opening,
-        "case_title": case.data["title"]
+        "case_title": case.data["title"],
+        "blind_mode": blind_mode
     }
 
 @router.post("/start-custom")
@@ -96,7 +99,8 @@ async def start_custom_session(
     session = sb.table("sessions").insert({
         "user_id": user.id,
         "case_id": case_id,
-        "status": "active"
+        "status": "active",
+        "blind_mode": False
     }).execute()
 
     session_id = session.data[0]["id"]
@@ -135,6 +139,7 @@ async def chat(
         raise HTTPException(status_code=404, detail="Active session not found")
 
     case = session.data["cases"]
+    blind_mode = session.data.get("blind_mode", False)
     turn = session.data["turn_count"] + 1
 
     logger.info("session.chat", user_id=user.id, session_id=session_id, turn=turn)
@@ -151,7 +156,7 @@ async def chat(
         .eq("session_id", session_id)\
         .order("turn_number").execute()
 
-    ai_response = await get_next_response(case, all_messages.data)
+    ai_response = await get_next_response(case, all_messages.data, blind_mode=blind_mode)
 
     sb.table("messages").insert({
         "session_id": session_id,
@@ -164,10 +169,7 @@ async def chat(
         .update({"turn_count": turn})\
         .eq("id", session_id).execute()
 
-    if turn >= 10:
-        return await _end_session_internal(session_id, case, all_messages.data, sb)
-
-    return {"response": ai_response, "turn": turn, "max_turns": 10}
+    return {"response": ai_response, "turn": turn}
 
 @router.post("/{session_id}/end")
 @limiter.limit("10/minute")
@@ -190,6 +192,7 @@ async def end_session(
         raise HTTPException(status_code=400, detail="Session already completed.")
 
     case = session.data["cases"]
+    blind_mode = session.data.get("blind_mode", False)
 
     messages = sb.table("messages")\
         .select("*")\
@@ -200,12 +203,15 @@ async def end_session(
     if len(user_messages) == 0:
         raise HTTPException(status_code=400, detail="You haven't answered anything yet.")
 
-    result = await _end_session_internal(session_id, case, messages.data, sb)
+    result = await _end_session_internal(session_id, case, messages.data, sb, blind_mode=blind_mode)
     logger.info("session.completed", user_id=user.id, session_id=session_id, score=result["evaluation"].get("overall_score"))
     return result
 
-async def _end_session_internal(session_id: str, case: dict, messages: list, sb: Client) -> dict:
-    evaluation = await evaluate_session(case, messages)
+async def _end_session_internal(session_id: str, case: dict, messages: list, sb: Client, blind_mode: bool = False) -> dict:
+    evaluation = await evaluate_session(case, messages, blind_mode=blind_mode)
+    case_summary = await generate_case_summary(case, evaluation)
+
+    missed_questions = evaluation.get("missed_questions", []) if blind_mode else []
 
     sb.table("evaluations").insert({
         "session_id": session_id,
@@ -214,13 +220,17 @@ async def _end_session_internal(session_id: str, case: dict, messages: list, sb:
         "workup_score": evaluation["workup_score"],
         "reasoning_score": evaluation["reasoning_score"],
         "ai_feedback": evaluation["ai_feedback"],
-        "missed_diagnoses": evaluation["missed_diagnoses"]
+        "missed_diagnoses": evaluation["missed_diagnoses"],
+        "case_summary": case_summary,
+        "missed_questions": missed_questions
     }).execute()
 
     sb.table("sessions")\
         .update({"status": "completed"})\
         .eq("id", session_id).execute()
 
+    evaluation["case_summary"] = case_summary
+    evaluation["missed_questions"] = missed_questions
     return {"evaluation": evaluation, "session_id": session_id}
 
 @router.get("/{session_id}/history")

@@ -11,7 +11,7 @@ GOLD STANDARD WORKUP:
 
 STUDENT SESSION TRANSCRIPT:
 {session_transcript}
-
+{blind_mode_section}
 Evaluate this student and respond ONLY with this exact JSON, no extra text:
 {{
   "overall_score": <0-100>,
@@ -21,10 +21,11 @@ Evaluate this student and respond ONLY with this exact JSON, no extra text:
   "ai_feedback": "2-3 sentences of specific constructive feedback",
   "missed_diagnoses": ["diagnosis1", "diagnosis2"],
   "strengths": ["what they did well"],
-  "areas_for_improvement": ["what to work on"]
+  "areas_for_improvement": ["what to work on"]{missed_questions_json}
 }}
 
 Scoring rubric:
 - differential_score: Did they identify the key diagnoses?
 - workup_score: Did they order appropriate tests without over-ordering?
 - reasoning_score: Did they connect clinical findings to their reasoning?
+{blind_mode_scoring}
