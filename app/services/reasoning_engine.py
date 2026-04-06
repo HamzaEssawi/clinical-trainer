@@ -32,23 +32,31 @@ async def get_next_response(case: dict, messages: list, blind_mode: bool = False
 
     if blind_mode:
         mode_instructions = (
-            "BLIND MODE — Do NOT reveal the case upfront.\n"
-            "YOUR FIRST MESSAGE: Say only: 'A patient presents to you. What would you like to know?'\n"
-            "For all subsequent messages: Answer the student's history and examination questions "
-            "based on CASE INFORMATION above. Reveal findings only when specifically asked. "
-            "Answer concisely as clinical findings or patient responses. Do not volunteer information."
+            "=== BLIND MODE IS ACTIVE ===\n"
+            "CRITICAL RULE: Do NOT present any case information, symptoms, or clinical details — not now, not ever, unless the student specifically asks.\n"
+            "YOUR ENTIRE FIRST MESSAGE MUST BE EXACTLY THIS ONE SENTENCE: "
+            "'A patient has come to see you. What would you like to know?'\n"
+            "Do not add anything else. No diagnosis hints. No symptoms. No context. Just that one sentence.\n"
+            "For all subsequent messages: use CASE INFORMATION (below) as your private reference. "
+            "Answer only what the student directly asks about. "
+            "If asked about a symptom or finding present in the case, confirm it. "
+            "If asked about something not in the case, say the patient denies it or it is not present. "
+            "Never volunteer information. Never summarize. One answer per turn, then one question back."
         )
         history_phase = (
-            "Blind mode active — student must ask questions to discover history and exam findings. "
-            "Answer each question based on CASE INFORMATION only when directly asked."
+            "BLIND MODE — the student does NOT have the case. They must ask for every piece of information. "
+            "Answer only what they directly ask using CASE INFORMATION as your private reference. "
+            "Do not volunteer anything unprompted."
         )
+        logger.info("reasoning_engine.blind_mode_active", blind_mode=True, message_count=len(messages))
     else:
         mode_instructions = (
-            "YOUR FIRST MESSAGE: Copy the CASE INFORMATION above word for word exactly as written. "
+            "YOUR FIRST MESSAGE: Copy the CASE INFORMATION below word for word exactly as written. "
             "Then on a new line ask: 'What is your initial impression and top three differential diagnoses?'\n"
             "Do not skip this. Do not summarize. Copy the full case text exactly."
         )
         history_phase = "Full case has been presented to the student upfront."
+        logger.info("reasoning_engine.normal_mode_active", blind_mode=False, message_count=len(messages))
 
     system_prompt = PROMPTS["attending_physician"].format(
         case_presentation=case["presentation"],
