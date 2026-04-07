@@ -15,7 +15,7 @@ def get_groq_client() -> Groq:
 
 PROMPTS = {
     name: Path(f"app/prompts/{name}.txt").read_text()
-    for name in ["attending_physician", "evaluator"]
+    for name in ["attending_physician", "evaluator", "blind_mode"]
 }
 
 @retry(
@@ -27,55 +27,79 @@ PROMPTS = {
 def _call_groq_sync(client: Groq, **kwargs):
     return client.chat.completions.create(**kwargs)
 
-BLIND_OPENING = "A patient has come to see you. What would you like to know?"
+# ---------------------------------------------------------------------------
+# BLIND MODE — completely separate code path, normal mode is untouched
+# ---------------------------------------------------------------------------
 
-async def get_next_response(case: dict, messages: list, blind_mode: bool = False) -> str:
-    client = get_groq_client()
+BLIND_OPENING = "A patient has come to see you. Where would you like to start?"
 
-    # Blind mode opening: never call the LLM — return hardcoded sentence so the
-    # model cannot possibly leak the case text on the first message.
-    if blind_mode and len(messages) == 0:
+
+async def _get_blind_mode_response(case: dict, messages: list) -> str:
+    """
+    Separate flow for blind mode.
+    Turn 0 (no messages yet): return hardcoded opening, no API call.
+    Subsequent turns: use blind_mode.txt prompt, AI acts as patient/narrator.
+    """
+    if len(messages) == 0:
         logger.info("reasoning_engine.blind_opening_hardcoded")
         return BLIND_OPENING
 
-    if blind_mode:
-        mode_instructions = (
-            "BLIND MODE — you are answering a student's questions about a patient.\n"
-            "The student does NOT know the case. They are gathering history by asking you questions.\n"
-            "Rules:\n"
-            "- Answer ONLY what the student directly asks about\n"
-            "- If the finding is present in CASE INFORMATION: confirm or describe it naturally\n"
-            "- If the finding is NOT in the case: say the patient denies it or it is normal\n"
-            "- NEVER volunteer case details the student has not asked about\n"
-            "- After answering, ask one focused question to advance their clinical reasoning\n"
-            "When the student has gathered history and proposes differentials, probe their reasoning. "
-            "Then guide through workup, then treatment & management."
+    client = get_groq_client()
+
+    case_data = case.get("presentation", "")
+    system_prompt = PROMPTS["blind_mode"].format(case_data=case_data)
+
+    history = [{"role": "system", "content": system_prompt}]
+    for m in messages:
+        if m["role"] in ("user", "assistant"):
+            history.append({"role": m["role"], "content": m["content"]})
+
+    logger.info(
+        "reasoning_engine.blind_mode_call",
+        message_count=len(messages),
+    )
+
+    try:
+        loop = asyncio.get_running_loop()
+        response = await loop.run_in_executor(
+            None,
+            lambda: _call_groq_sync(
+                client,
+                model="llama-3.3-70b-versatile",
+                messages=history,
+                temperature=0.7,
+                max_tokens=300,
+            )
         )
-        history_phase = (
-            "Blind mode — student is gathering history by asking questions. "
-            "Answer based on CASE INFORMATION only when directly asked. Never volunteer anything."
-        )
-    else:
-        mode_instructions = (
-            "YOUR FIRST MESSAGE: Copy the CASE INFORMATION below word for word exactly as written. "
-            "Then on a new line ask: 'What is your initial impression and top three differential diagnoses?'\n"
-            "Do not skip this. Do not summarize. Copy the full case text exactly."
-        )
-        history_phase = "Full case has been presented to the student upfront."
+        return response.choices[0].message.content
+    except (RateLimitError, APITimeoutError, APIConnectionError) as e:
+        logger.error("groq.rate_limit", error=str(e))
+        raise HTTPException(status_code=503, detail="AI service temporarily unavailable. Please try again.")
+    except Exception as e:
+        logger.error("groq.error", error=str(e))
+        raise HTTPException(status_code=502, detail="AI service unavailable. Please try again.")
+
+
+# ---------------------------------------------------------------------------
+# NORMAL MODE — unchanged
+# ---------------------------------------------------------------------------
+
+async def _get_normal_response(case: dict, messages: list) -> str:
+    client = get_groq_client()
+
+    mode_instructions = (
+        "YOUR FIRST MESSAGE: Copy the CASE INFORMATION below word for word exactly as written. "
+        "Then on a new line ask: 'What is your initial impression and top three differential diagnoses?'\n"
+        "Do not skip this. Do not summarize. Copy the full case text exactly."
+    )
+    history_phase = "Full case has been presented to the student upfront."
 
     system_prompt = PROMPTS["attending_physician"].format(
         case_presentation=case["presentation"],
         expected_differentials=json.dumps(case["expected_differentials"]),
         gold_standard_workup=json.dumps(case["gold_standard_workup"]),
         mode_instructions=mode_instructions,
-        history_phase=history_phase
-    )
-
-    logger.info(
-        "reasoning_engine.prompt_assembled",
-        blind_mode=blind_mode,
-        message_count=len(messages),
-        prompt_start=system_prompt[:500]
+        history_phase=history_phase,
     )
 
     history = [{"role": "system", "content": system_prompt}]
@@ -92,7 +116,7 @@ async def get_next_response(case: dict, messages: list, blind_mode: bool = False
                 model="llama-3.3-70b-versatile",
                 messages=history,
                 temperature=0.7,
-                max_tokens=500
+                max_tokens=500,
             )
         )
         return response.choices[0].message.content
@@ -102,6 +126,21 @@ async def get_next_response(case: dict, messages: list, blind_mode: bool = False
     except Exception as e:
         logger.error("groq.error", error=str(e))
         raise HTTPException(status_code=502, detail="AI service unavailable. Please try again.")
+
+
+# ---------------------------------------------------------------------------
+# Public entry point — routes to the correct flow
+# ---------------------------------------------------------------------------
+
+async def get_next_response(case: dict, messages: list, blind_mode: bool = False) -> str:
+    if blind_mode:
+        return await _get_blind_mode_response(case, messages)
+    return await _get_normal_response(case, messages)
+
+
+# ---------------------------------------------------------------------------
+# Evaluation and summary — shared by both modes
+# ---------------------------------------------------------------------------
 
 async def evaluate_session(case: dict, messages: list, blind_mode: bool = False) -> dict:
     client = get_groq_client()
@@ -136,7 +175,7 @@ async def evaluate_session(case: dict, messages: list, blind_mode: bool = False)
         session_transcript=transcript,
         blind_mode_section=blind_mode_section,
         missed_questions_json=missed_questions_json,
-        blind_mode_scoring=blind_mode_scoring
+        blind_mode_scoring=blind_mode_scoring,
     )
 
     try:
@@ -148,7 +187,7 @@ async def evaluate_session(case: dict, messages: list, blind_mode: bool = False)
                 model="llama-3.3-70b-versatile",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
-                max_tokens=1200
+                max_tokens=1200,
             )
         )
 
@@ -166,6 +205,7 @@ async def evaluate_session(case: dict, messages: list, blind_mode: bool = False)
     except Exception as e:
         logger.error("groq.error", error=str(e))
         raise HTTPException(status_code=502, detail="AI service unavailable. Please try again.")
+
 
 async def generate_case_summary(case: dict, evaluation: dict) -> str:
     client = get_groq_client()
@@ -202,7 +242,7 @@ Be concise. No filler sentences. Medically accurate."""
                 model="llama-3.3-70b-versatile",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
-                max_tokens=800
+                max_tokens=800,
             )
         )
         return response.choices[0].message.content
