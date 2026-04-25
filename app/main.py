@@ -51,7 +51,7 @@ app.include_router(cases.router)
 app.include_router(progress.router)
 app.include_router(study.router)
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 async def health():
     return {"status": "ok"}
     
